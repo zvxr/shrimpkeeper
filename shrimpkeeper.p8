@@ -1,9 +1,6 @@
 pico-8 cartridge // http://www.pico-8.com
 version 43
 __lua__
--- ent physics
--- by zep
--- edited version for shrimp
 
 #include ent.lua
 #include physics.lua

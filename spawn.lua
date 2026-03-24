@@ -21,10 +21,6 @@ end
 function init_world()
 	ent = {}
 	init_tank()
-
-	-- create some ents
-
-	-- make player
 	pl = make_ent(21,20,9)
 	pl.frames=4
 

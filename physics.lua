@@ -2,7 +2,6 @@ gravity = 0.02
 fric = 0.85
 bounce = 0.3
 
--- flag 1: solid tile
 function solid(tx,ty)
 	return fget(mget(flr(tx),flr(ty)),1)
 end
@@ -13,14 +12,6 @@ function solid_map(a,dx,dy)
 		solid(a.x+dx-a.w,a.y+dy+a.h) or
 		solid(a.x+dx+a.w,a.y+dy+a.h)
 end
-
--- true if [a] will hit another
--- ent after moving dx,dy
-
--- also handle bounce response
--- (cheat version: both ents
--- end up with the velocity of
--- the fastest moving ent)
 
 function solid_ent(a, dx, dy)
 	for a2 in all(ent) do
@@ -77,15 +68,7 @@ function move_y(a,dy)
 	return true
 end
 
--- return true when something
--- was collected / destroyed,
--- indicating that the two
--- ents shouldn't bounce off
--- each other
-
 function collide_ent(a1,a2)
-
-	-- player collects treasure
 	if (a1==pl and a2.k==36) then
 		del(ent,a2)
 		tank.money+=1

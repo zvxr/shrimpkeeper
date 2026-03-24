@@ -34,6 +34,8 @@ Goals: small code, low token usage, fast iteration, simple patterns.
 - Keep update/draw loops straightforward.
 - Favor small helpers over deep indirection.
 - Keep movement/physics lightweight.
+- Do not add comments to code files; keep documentation in `DOCS.md` instead.
+- Always update `DOCS.md` when variables, controls, systems, or file responsibilities change.
 
 ## Avoid by default
 - classes / metatables
