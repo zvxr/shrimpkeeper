@@ -47,9 +47,32 @@ function near_shrimp(a)
 	end
 end
 
+function hold_shrimp(a)
+	hs=a
+	del(ent,a)
+end
+
+function drop_shrimp()
+	add(ent,hs)
+	hs.x=pl.x+1
+	hs.y=pl.y
+	hs.dx=0
+	hs.dy=0
+	hs=nil
+end
+
 function try_shrimp(a)
 	if btnp(4) then
-		sd_a=near_shrimp(a)
+		if hs then
+			drop_shrimp()
+		else
+			local b=near_shrimp(a)
+			if btn(3) and b then
+				hold_shrimp(b)
+			else
+				sd_a=b
+			end
+		end
 	end
 end
 
@@ -206,5 +229,16 @@ function draw_shrimp(a)
 	pal(7,a.sr and a.sp>0.7 and 7 or c)
 	pal(14,a.sd and a.sp>0.9 and sbc(a,10,9) or 14)
 	spr(a.k + f*a.fs, sx, sy, a.sw, a.sh, a.so==1)
+	pal()
+end
+
+function draw_held_shrimp()
+	if not hs then return end
+	local c=shrimp_body(hs)
+	pal(5,c)
+	pal(6,shrimp_back(hs))
+	pal(7,hs.sr and hs.sp>0.7 and 7 or c)
+	pal(14,hs.sd and hs.sp>0.9 and sbc(hs,10,9) or 14)
+	spr(52,room_x*128+8,16)
 	pal()
 end

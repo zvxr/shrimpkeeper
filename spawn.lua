@@ -25,6 +25,7 @@ end
 
 function init_world()
 	ent = {}
+	hs=nil
 	init_tank()
 	pl = make_ent(21,20,9)
 	pl.frames=4

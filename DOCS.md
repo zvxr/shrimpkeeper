@@ -36,6 +36,7 @@ Created by `make_ent(k,x,y)`.
 - `sdx`: desired horizontal direction
 - `so`: orientation (`0` left, `1` right)
 - `sj`: remaining hop-chain jumps
+- `hs`: currently held shrimp, or `nil`
 
 ### Age
 
@@ -72,6 +73,7 @@ Created by `make_ent(k,x,y)`.
 - age `0` fry are valid shrimp state and should still run shrimp logic
 - adults currently use a slightly stronger move/hop impulse than fry
 - overlapping shrimp apply a small separation push so they do not clump as easily
+- a held shrimp is removed from `ent` until dropped again
 
 ### Breeding
 
@@ -144,6 +146,7 @@ Created by `make_ent(k,x,y)`.
 - `t`: tank update tick counter
 - `ct`: coin spawn timer
 - `bm`: short breeding debug text, including `Mutation!`
+- one day is currently `1500` updates
 - tank parameter status uses:
   - `0`: healthy
   - `1`: unhealthy
@@ -198,7 +201,8 @@ Created by `make_ent(k,x,y)`.
 - `btn(0)`: left
 - `btn(1)`: right
 - `btn(2)`: up / interact with doors
-- `btn(4)`: inspect nearby shrimp / close dialog
+- `btn(3)+btnp(4)`: hold nearby shrimp if none is held
+- `btn(4)`: inspect nearby shrimp, drop held shrimp, or close dialog
 - `btn(5)`: swim upward
 - `sfx(2)`: jump / hop sound
 
@@ -208,6 +212,13 @@ Created by `make_ent(k,x,y)`.
 - pressing `Z` near a shrimp opens a shrimp dialog
 - while dialog is open, normal update/control is paused
 - any button press closes the dialog
+
+## Held Shrimp
+
+- only one shrimp can be held at a time
+- held shrimp draw with sprite `52`
+- held shrimp icon is drawn at tile `(1,2)` on the current screen
+- dropping a held shrimp places it next to the player
 
 ## Doors
 
