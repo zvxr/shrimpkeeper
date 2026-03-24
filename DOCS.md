@@ -21,6 +21,18 @@ Created by `make_ent(k,x,y)`.
 - `sw`, `sh`: sprite width/height in sprite cells
 - `w`, `h`: collision half-width/half-height in tiles
 
+## Shrimp
+
+- shrimp are currently the only `2x1` ent
+- current setup:
+- `k=37`
+- `frames=4`
+- `fs=2`
+- `sw=2`
+- `sh=1`
+- `w=0.9`
+- `h` currently uses the base default unless changed later
+
 ## Physics
 
 - `gravity`: downward acceleration per update

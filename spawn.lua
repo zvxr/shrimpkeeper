@@ -28,6 +28,6 @@ function init_world()
 	shrimp.frames=4
 	shrimp.fs=2
 	shrimp.sw=2
-	shrimp.sh=2
+	shrimp.sh=1
 	shrimp.w=0.9
 end
