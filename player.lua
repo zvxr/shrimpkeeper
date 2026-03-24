@@ -22,7 +22,8 @@ end
 
 function try_door(a)
 	if on_door(a) and btnp(2) then
-		sfx(2)
+		tank.sm=true
+		tank.ss=1
 	end
 end
 

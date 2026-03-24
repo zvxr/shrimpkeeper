@@ -37,9 +37,9 @@ function shrimp_line(a)
 	return a.sb and "red" or "green"
 end
 
-function near_shrimp(a)
+function near_pet(a)
 	for b in all(ent) do
-		if b.sa!=nil and
+		if (b.sa!=nil or b.np!=nil) and
 			abs(a.x-b.x)<1.5 and
 			abs(a.y-b.y)<1.5 then
 			return b
@@ -47,44 +47,54 @@ function near_shrimp(a)
 	end
 end
 
-function hold_shrimp(a)
-	hs=a
+function hold_pet(a)
+	ha=a
 	del(ent,a)
 end
 
-function drop_shrimp()
-	add(ent,hs)
-	hs.x=pl.x+1
-	hs.y=pl.y
-	hs.dx=0
-	hs.dy=0
-	hs=nil
+function drop_pet()
+	add(ent,ha)
+	ha.x=pl.x+1
+	ha.y=pl.y
+	ha.dx=0
+	ha.dy=0
+	ha=nil
 end
 
-function try_shrimp(a)
+function try_pet(a)
 	if btnp(4) then
-		if hs then
-			drop_shrimp()
+		if ha then
+			drop_pet()
 		else
-			local b=near_shrimp(a)
+			local b=near_pet(a)
 			if btn(3) and b then
-				hold_shrimp(b)
+				hold_pet(b)
 			else
-				sd_a=b
+				if b then
+					sd_a=b
+				else
+					use_item()
+				end
 			end
 		end
 	end
 end
 
-function draw_shrimp_dialog(a)
+function draw_pet_dialog(a)
 	rectfill(20,28,107,83,1)
 	rect(20,28,107,83,7)
-	print("shrimp",48,32,7)
-	print("age:"..a.sa,28,42,7)
-	print("pur:"..a.sp,28,50,7)
-	print("line:"..shrimp_line(a),28,58,7)
-	print("riley:"..(a.sr and "y" or "n"),28,66,7)
-	print("devil:"..(a.sd and "y" or "n"),28,74,7)
+	if a.sa!=nil then
+		print("shrimp",48,32,7)
+		print("age:"..a.sa,28,42,7)
+		print("pur:"..a.sp,28,50,7)
+		print("line:"..shrimp_line(a),28,58,7)
+		print("riley:"..(a.sr and "y" or "n"),28,66,7)
+		print("devil:"..(a.sd and "y" or "n"),28,74,7)
+	else
+		print("snail",52,32,7)
+		print("pur:"..a.np,28,50,7)
+		print("line:"..(a.nb and "red" or "green"),28,58,7)
+	end
 end
 
 function make_fry(x,y)
@@ -232,13 +242,18 @@ function draw_shrimp(a)
 	pal()
 end
 
-function draw_held_shrimp()
-	if not hs then return end
-	local c=shrimp_body(hs)
-	pal(5,c)
-	pal(6,shrimp_back(hs))
-	pal(7,hs.sr and hs.sp>0.7 and 7 or c)
-	pal(14,hs.sd and hs.sp>0.9 and sbc(hs,10,9) or 14)
-	spr(52,room_x*128+8,16)
+function draw_held_pet()
+	if not ha then return end
+	if ha.sa!=nil then
+		local c=shrimp_body(ha)
+		pal(5,c)
+		pal(6,shrimp_back(ha))
+		pal(7,ha.sr and ha.sp>0.7 and 7 or c)
+		pal(14,ha.sd and ha.sp>0.9 and sbc(ha,10,9) or 14)
+		spr(52,room_x*128+8,16)
+	else
+		pal(5,snail_shell(ha))
+		spr(48,room_x*128+8,16)
+	end
 	pal()
 end

@@ -6,6 +6,7 @@ __lua__
 #include physics.lua
 #include tank.lua
 #include shrimp.lua
+#include snail.lua
 #include player.lua
 #include spawn.lua
 
@@ -18,12 +19,17 @@ function _update()
 		if any_btn() then sd_a=nil end
 		return
 	end
+	if tank.sm then
+		upd_shop()
+		return
+	end
 	upd_tank()
 	control_player(pl)
 	upd_shrimp()
+	upd_snail()
 	foreach(ent, move_ent)
 	try_door(pl)
-	try_shrimp(pl)
+	try_pet(pl)
 end
 
 function _draw()
@@ -35,10 +41,11 @@ function _draw()
 	camera(room_x*128,room_y*128)
 	map(room_x*16,room_y*16,room_x*128,room_y*128,16,16)
 	foreach(ent,draw_ent)
-	draw_held_shrimp()
+	draw_held_pet()
 	camera()
 	draw_tank_hud()
-	if sd_a then draw_shrimp_dialog(sd_a) end
+	if tank.sm then draw_shop() end
+	if sd_a then draw_pet_dialog(sd_a) end
 end
 
 __gfx__

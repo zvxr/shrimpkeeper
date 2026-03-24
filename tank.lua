@@ -10,7 +10,13 @@ function init_tank()
 		day=1,
 		t=0,
 		ct=0,
-		bm=""
+		bm="",
+		sm=false,
+		ss=1,
+		i1=0,
+		i2=0,
+		i1p=0,
+		i1b=false
 	}
 end
 
@@ -64,6 +70,27 @@ function tank_ok()
 		st_stab(tank.stab)==0
 end
 
+function tank_step()
+	local f=0
+	local s=0
+	local n=0
+	for a in all(ent) do
+		if a.np!=nil then
+			n+=1
+		elseif a.sa!=nil then
+			if a.sa<8 then
+				f+=1
+			else
+				s+=1
+			end
+		end
+	end
+	tank.stab=min(100,tank.stab+10)
+	tank.amm+=f+s*2+n/2
+	tank.kh-=0.2-n*0.1
+	tank.tds+=10
+end
+
 function upd_tank()
 	tank.t+=1
 	local d=1+flr(tank.t/1500)
@@ -72,11 +99,97 @@ function upd_tank()
 		shrimp_day()
 		breed_day()
 	end
+	if tank.t%300==0 then tank_step() end
 	tank.ct+=1
 	if tank.ct>=120 then
 		tank.ct=0
 		add_coin()
 	end
+end
+
+function use_item()
+	if tank.i1>0 then
+		if tank.i1==1 then
+			a=make_snail(pl.x+1,pl.y)
+			a.np=tank.i1p
+			a.nb=tank.i1b
+		else
+			a=make_shrimp(pl.x+1,pl.y)
+			a.sp=0.7+rnd(0.5)
+			a.sr=rnd(1)<0.5
+			a.sd=rnd(1)<0.1
+		end
+		tank.i1=0
+		tank.i1p=0
+	elseif tank.i2>0 then
+		if tank.i2==49 then
+			tank.stab-=50
+			tank.amm/=2
+			tank.kh-=1
+			tank.gh-=1
+			tank.tds-=50
+		elseif tank.i2==50 then
+			tank.stab-=20
+			tank.kh+=2
+			tank.gh+=2
+			tank.tds+=50
+		else
+			tank.stab-=20
+			tank.gh+=2
+			tank.tds+=25
+		end
+		tank.i2=0
+	end
+end
+
+function shop_cost()
+	return tank.ss==1 and 5 or tank.ss<4 and 10 or tank.ss==4 and 20 or 30
+end
+
+function buy_shop()
+	local c=shop_cost()
+	if tank.money<c then return end
+	if tank.ss<4 then
+		if tank.i2>0 then return end
+		tank.i2=48+tank.ss
+	else
+		if tank.i1>0 then return end
+		tank.i1=tank.ss-3
+		if tank.i1==1 then
+			tank.i1p=rnd(1)
+			tank.i1b=rnd(1)<0.5
+		end
+	end
+	tank.money-=c
+end
+
+function upd_shop()
+	if btnp(2) then
+		tank.ss=max(1,tank.ss-1)
+	elseif btnp(3) then
+		tank.ss=min(5,tank.ss+1)
+	elseif btnp(4) then
+		buy_shop()
+	elseif btnp(5) then
+		tank.sm=false
+	end
+end
+
+function draw_shop_row(n,y,s,c)
+	print(tank.ss==n and ">" or " ",18,y,7)
+	print(s,26,y,7)
+	print("$"..c,88,y,tank.money<c and 8 or 11)
+end
+
+function draw_shop()
+	rectfill(12,24,116,88,1)
+	rect(12,24,116,88,7)
+	print("shop",56,28,7)
+	draw_shop_row(1,38,"water",5)
+	draw_shop_row(2,48,"kh+",10)
+	draw_shop_row(3,58,"gh+",10)
+	draw_shop_row(4,68,"snail",20)
+	draw_shop_row(5,78,"fancy",30)
 end
 
 function draw_tank_hud()
@@ -89,4 +202,10 @@ function draw_tank_hud()
 	print(tank.bm,36,15,7)
 	print("tds:"..tank.tds,64,3,st_col(st_tds(tank.tds)))
 	print("stab:"..tank.stab,64,9,st_col(st_stab(tank.stab)))
+	if tank.i1==1 then
+		spr(48,16,16)
+	elseif tank.i1==2 then
+		spr(52,16,16)
+	end
+	if tank.i2>0 then spr(tank.i2,24,16) end
 end

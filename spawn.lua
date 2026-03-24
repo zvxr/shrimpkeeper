@@ -25,7 +25,7 @@ end
 
 function init_world()
 	ent = {}
-	hs=nil
+	ha=nil
 	init_tank()
 	pl = make_ent(21,20,9)
 	pl.frames=4
@@ -33,4 +33,5 @@ function init_world()
 	for i=1,4 do
 		add_fry()
 	end
+	make_snail(24,9)
 end
