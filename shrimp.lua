@@ -5,14 +5,16 @@ function shrimp_size(a)
 		a.frames=4
 		a.sw=1
 		a.sh=1
-		a.w=0.4
+		a.w=0.3
+		a.h=0.3
 	else
 		a.k=37
 		a.fs=2
 		a.frames=4
 		a.sw=2
 		a.sh=1
-		a.w=0.9
+		a.w=0.7
+		a.h=0.3
 	end
 end
 
@@ -72,7 +74,8 @@ end
 function make_baby(x,y,a,b)
 	local c=make_shrimp(x,y)
 	local lo=min(a.sp,b.sp)-0.2
-	local hi=max(a.sp,b.sp)
+	local hi=max(a.sp,b.sp)+0.2
+	local m=false
 	c.sa=1
 	c.sp=lo+rnd(hi-lo)
 	c.sb=a.sb
@@ -80,11 +83,11 @@ function make_baby(x,y,a,b)
 		((a.sr or b.sr) and rnd(1)<0.5)
 	c.sd=a.sd and b.sd or
 		((a.sd or b.sd) and rnd(1)<0.5)
-	if rnd(20)<1 then c.sp+=1 end
-	if rnd(50)<1 then c.sr=true end
-	if rnd(100)<1 then c.sd=true end
+	if rnd(10)<1 then c.sp+=1 m=true end
+	if rnd(20)<1 then c.sr=true m=true end
+	if rnd(100)<1 then c.sd=true m=true end
 	shrimp_size(c)
-	return c
+	return m
 end
 
 function breed_day()
@@ -101,11 +104,10 @@ function breed_day()
 					flr(a.x/16)==flr(b.x/16) and
 					flr(a.y/16)==flr(b.y/16) then
 					if rnd(1)<0.5 then
-						make_baby(
+						tank.bm=make_baby(
 							7+flr(rnd(6))+flr(a.x/16)*16,
 							9+flr(rnd(2))+flr(a.y/16)*16,
-							a,b)
-						tank.bm="br:bred"
+							a,b) and "Mutation!" or "br:bred"
 					else
 						tank.bm="br:fail"
 					end

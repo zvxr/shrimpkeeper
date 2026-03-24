@@ -43,6 +43,8 @@ Created by `make_ent(k,x,y)`.
 - adult: `8+`
 - fry use sprite strip `53..56` as `1x1`
 - adults use sprite strip starting at `37` with `+2` frame steps as `2x1`
+- fry hitbox is currently smaller than the full tile
+- adult hitbox is currently narrower/flatter than the full sprite
 
 ### Defaults
 
@@ -82,14 +84,15 @@ Created by `make_ent(k,x,y)`.
   - 50% success roll
 - success creates one fry with `sa=1`
 - baby values:
-  - `sp`: random from `(lowest-0.2)` to `highest`
+  - `sp`: random from `(lowest-0.2)` to `(highest+0.2)`
   - `sb`: shared parent base color
   - `sr`: `TT -> T`, `TF -> 50% T`, `FF -> F`
   - `sd`: `TT -> T`, `TF -> 50% T`, `FF -> F`
 - mutations:
-  - `1/20`: `sp += 1`
-  - `1/50`: `sr=true`
+  - `1/10`: `sp += 1`
+  - `1/20`: `sr=true`
   - `1/100`: `sd=true`
+  - if any mutation happens, `bm` shows `Mutation!`
 
 ### Palette Mapping
 
@@ -127,7 +130,6 @@ Created by `make_ent(k,x,y)`.
 - `bounce`: shared horizontal rebound amount on blocked movement
 - player-to-ent horizontal collisions currently use a slightly stronger rebound to help herd shrimp
 - if the player is moving upward into a shrimp, the shrimp gets a small upward push too
-- if `up` is held during that jump, the shrimp gets a much stronger upward and lateral shove to help free clumps
 
 ## Tank
 
@@ -141,7 +143,7 @@ Created by `make_ent(k,x,y)`.
 - `day`: current day number
 - `t`: tank update tick counter
 - `ct`: coin spawn timer
-- `bm`: short breeding debug text
+- `bm`: short breeding debug text, including `Mutation!`
 - tank parameter status uses:
   - `0`: healthy
   - `1`: unhealthy
