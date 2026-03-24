@@ -14,11 +14,16 @@ function _init()
 end
 
 function _update()
+	if sd_a then
+		if any_btn() then sd_a=nil end
+		return
+	end
 	upd_tank()
 	control_player(pl)
 	upd_shrimp()
 	foreach(ent, move_ent)
 	try_door(pl)
+	try_shrimp(pl)
 end
 
 function _draw()
@@ -32,6 +37,7 @@ function _draw()
 	foreach(ent,draw_ent)
 	camera()
 	draw_tank_hud()
+	if sd_a then draw_shrimp_dialog(sd_a) end
 end
 
 __gfx__

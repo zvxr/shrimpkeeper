@@ -25,3 +25,8 @@ function try_door(a)
 		sfx(2)
 	end
 end
+
+function any_btn()
+	return btnp(0) or btnp(1) or btnp(2) or
+		btnp(3) or btnp(4) or btnp(5)
+end

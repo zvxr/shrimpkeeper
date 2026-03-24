@@ -9,7 +9,8 @@ function init_tank()
 		money=0,
 		day=1,
 		t=0,
-		ct=0
+		ct=0,
+		bm=""
 	}
 end
 
@@ -54,12 +55,22 @@ function st_stab(v)
 	return v>60 and 1 or 2
 end
 
+function tank_ok()
+	return st_ph(tank.ph)==0 and
+		st_amm(tank.amm)==0 and
+		st_tds(tank.tds)==0 and
+		st_kh(tank.kh)==0 and
+		st_gh(tank.gh)==0 and
+		st_stab(tank.stab)==0
+end
+
 function upd_tank()
 	tank.t+=1
 	local d=1+flr(tank.t/1800)
 	if d>tank.day then
 		tank.day=d
 		shrimp_day()
+		breed_day()
 	end
 	tank.ct+=1
 	if tank.ct>=120 then
@@ -75,6 +86,7 @@ function draw_tank_hud()
 	print("day:"..tank.day,102,15,11)
 	print("kh:"..fmt1(tank.kh),8,9,st_col(st_kh(tank.kh)))
 	print("gh:"..fmt1(tank.gh),36,9,st_col(st_gh(tank.gh)))
+	print(tank.bm,36,15,7)
 	print("tds:"..tank.tds,64,3,st_col(st_tds(tank.tds)))
 	print("stab:"..tank.stab,64,9,st_col(st_stab(tank.stab)))
 end

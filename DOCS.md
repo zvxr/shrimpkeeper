@@ -69,6 +69,27 @@ Created by `make_ent(k,x,y)`.
 - shrimp animation now follows `sdx` / hopping state, not collision rebound velocity
 - age `0` fry are valid shrimp state and should still run shrimp logic
 - adults currently use a slightly stronger move/hop impulse than fry
+- overlapping shrimp apply a small separation push so they do not clump as easily
+
+### Breeding
+
+- breeding is checked once on each new day
+- requires:
+  - two adult shrimp
+  - same `sb`
+  - same room
+  - all tank parameters healthy
+  - 50% success roll
+- success creates one fry with `sa=1`
+- baby values:
+  - `sp`: random from `(lowest-0.2)` to `highest`
+  - `sb`: shared parent base color
+  - `sr`: `TT -> T`, `TF -> 50% T`, `FF -> F`
+  - `sd`: `TT -> T`, `TF -> 50% T`, `FF -> F`
+- mutations:
+  - `1/20`: `sp += 1`
+  - `1/50`: `sr=true`
+  - `1/100`: `sd=true`
 
 ### Palette Mapping
 
@@ -119,6 +140,7 @@ Created by `make_ent(k,x,y)`.
 - `day`: current day number
 - `t`: tank update tick counter
 - `ct`: coin spawn timer
+- `bm`: short breeding debug text
 - tank parameter status uses:
   - `0`: healthy
   - `1`: unhealthy
@@ -173,8 +195,16 @@ Created by `make_ent(k,x,y)`.
 - `btn(0)`: left
 - `btn(1)`: right
 - `btn(2)`: up / interact with doors
+- `btn(4)`: inspect nearby shrimp / close dialog
 - `btn(5)`: swim upward
 - `sfx(2)`: jump / hop sound
+
+## Dialog
+
+- `sd_a`: currently viewed shrimp, or `nil`
+- pressing `Z` near a shrimp opens a shrimp dialog
+- while dialog is open, normal update/control is paused
+- any button press closes the dialog
 
 ## Doors
 
