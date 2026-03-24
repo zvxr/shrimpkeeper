@@ -1,4 +1,3 @@
-flr_y = 120
 gravity = 0.02
 
 -- flag 1: solid tile
@@ -6,13 +5,12 @@ function solid(tx,ty)
 	return fget(mget(flr(tx),flr(ty)),1)
 end
 
-function solid_map(a,dx,dz)
-	local by=flr(a.y/16)*16+15-(a.z+dz)
+function solid_map(a,dx,dy)
 	return
-		solid(a.x+dx-a.w,by-a.h*2) or
-		solid(a.x+dx+a.w,by-a.h*2) or
-		solid(a.x+dx-a.w,by) or
-		solid(a.x+dx+a.w,by)
+		solid(a.x+dx-a.w,a.y+dy-a.h) or
+		solid(a.x+dx+a.w,a.y+dy-a.h) or
+		solid(a.x+dx-a.w,a.y+dy+a.h) or
+		solid(a.x+dx+a.w,a.y+dy+a.h)
 end
 
 -- true if [a] will hit another
@@ -30,11 +28,11 @@ function solid_ent(a, dx, dy)
 				flr(a.y/16)==flr(a2.y/16) then
 
 			local x=(a.x+dx) - a2.x
-			local z=(a.z+dy) - a2.z
+				local y=(a.y+dy) - a2.y
 
-			if ((abs(x) < (a.w+a2.w)) and
-					 (abs(z) < (a.h+a2.h)))
-			then
+				if ((abs(x) < (a.w+a2.w)) and
+					 (abs(y) < (a.h+a2.h)))
+				then
 
 				-- moving together?
 					-- this allows ents to
@@ -61,11 +59,11 @@ function solid_ent(a, dx, dy)
 
 				-- along y
 
-				if (dy != 0 and abs(z) <
-					   abs(a.z-a2.z)) then
-					v=abs(a.dy)>abs(a2.dy) and
-					  a.dy or a2.dy
-					a.dy,a2.dy = v,v
+					if (dy != 0 and abs(y) <
+						   abs(a.y-a2.y)) then
+						v=abs(a.dy)>abs(a2.dy) and
+						  a.dy or a2.dy
+						a.dy,a2.dy = v,v
 
 					local ca=
 					 collide_ent(a,a2) or
@@ -94,15 +92,15 @@ function move_x(a,dx)
 	return true
 end
 
-function move_z(a,dz)
-	local s=sgn(dz)/8
-	while abs(dz)>0 do
-		local d=abs(dz)<1/8 and dz or s
+function move_y(a,dy)
+	local s=sgn(dy)/8
+	while abs(dy)>0 do
+		local d=abs(dy)<1/8 and dy or s
 		if solid_map(a,0,d) or solid_ent(a,0,d) then
 			return false
 		end
-		a.z += d
-		dz -= d
+		a.y += d
+		dy -= d
 	end
 	return true
 end
@@ -118,6 +116,7 @@ function collide_ent(a1,a2)
 	-- player collects treasure
 	if (a1==pl and a2.k==35) then
 		del(ent,a2)
+		pl.money+=1
 		sfx(3)
 		return true
 	end

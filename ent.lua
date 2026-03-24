@@ -7,9 +7,7 @@ ent = {} -- all ents
 -- returns the new ent table
 --
 -- common ent fields:
--- dx: horizontal speed in tiles/frame
--- z: height above the floor in tiles
--- dy: vertical swim speed
+-- dx,dy: speed in tiles/frame
 -- frame: current anim frame
 -- t: ticks alive / local timer
 -- grav: true if gravity applies
@@ -24,7 +22,6 @@ function make_ent(k, x, y)
 		k = k,
 		x = x,
 		y = y,
-		z = 0,
 		dx = 0,
 		dy = 0,
 		frame = 0,
@@ -52,21 +49,15 @@ end
 
 function move_ent(a)
 	-- x,y: world position in tiles
-	-- z: height above the local floor
-	-- dy: upward speed; gravity lowers it
+	-- dy: vertical speed; gravity pulls down
 
-	if (a.grav) a.dy -= gravity
+	if (a.grav) a.dy += gravity
 
 	if not move_x(a,a.dx) then
 		a.dx *= -a.bounce
 	end
 
-	if not move_z(a,a.dy) then
-		a.dy *= -a.bounce
-	end
-
-	if (a.z < 0) then
-		a.z = 0
+	if not move_y(a,a.dy) then
 		a.dy *= -a.bounce
 	end
 
@@ -88,6 +79,6 @@ end
 
 function draw_ent(a)
 	local sx = (a.x * 8) - a.sw*4
-	local sy = flr(a.y/16)*128 + flr_y - a.z*8 - a.sh*8
+	local sy = (a.y * 8) - a.sh*4
 	spr(a.k + flr(a.frame)*a.fs, sx, sy, a.sw, a.sh)
 end
