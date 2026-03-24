@@ -8,7 +8,8 @@ function init_tank()
 		tds=140,
 		money=0,
 		day=1,
-		t=0
+		t=0,
+		ct=0
 	}
 end
 
@@ -19,6 +20,11 @@ end
 function upd_tank()
 	tank.t+=1
 	tank.day=1+flr(tank.t/1800)
+	tank.ct+=1
+	if tank.ct>=120 then
+		tank.ct=0
+		add_coin()
+	end
 end
 
 function draw_tank_hud()
