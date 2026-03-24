@@ -127,6 +127,7 @@ Created by `make_ent(k,x,y)`.
 - `bounce`: shared horizontal rebound amount on blocked movement
 - player-to-ent horizontal collisions currently use a slightly stronger rebound to help herd shrimp
 - if the player is moving upward into a shrimp, the shrimp gets a small upward push too
+- if `up` is held during that jump, the shrimp gets a much stronger upward and lateral shove to help free clumps
 
 ## Tank
 
