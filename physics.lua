@@ -27,9 +27,13 @@ function solid_ent(a, dx, dy)
 					collide_ent(a2,a)
 				if ca then return false end
 				if a==pl and a2.sa!=nil and a.dy<0 then
-					a2.dy-=0.25
+					a2.dy-=0.5
+					a2.dx+=x!=0 and sgn(x)*0.35 or
+						(rnd(1)<0.5 and -0.35 or 0.35)
 				elseif a2==pl and a.sa!=nil and a2.dy<0 then
-					a.dy-=0.25
+					a.dy-=0.5
+					a.dx-=x!=0 and sgn(x)*0.35 or
+						(rnd(1)<0.5 and -0.35 or 0.35)
 				end
 				if dx != 0 then
 					local b=bounce

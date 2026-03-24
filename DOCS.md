@@ -129,7 +129,7 @@ Created by `make_ent(k,x,y)`.
 - `fric`: shared velocity decay multiplier
 - `bounce`: shared horizontal rebound amount on blocked movement
 - player-to-ent horizontal collisions currently use a slightly stronger rebound to help herd shrimp
-- if the player is moving upward into a shrimp, the shrimp gets a small upward push too
+- if the player is moving upward into a shrimp, the shrimp gets a stronger upward and sideways push
 
 ## Tank
 
