@@ -46,7 +46,7 @@ function move_ent(a)
 end
 
 function draw_ent(a)
-	if a.sa then
+	if a.sa!=nil then
 		draw_shrimp(a)
 		return
 	end

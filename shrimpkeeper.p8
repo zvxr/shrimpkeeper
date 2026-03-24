@@ -16,6 +16,7 @@ end
 function _update()
 	upd_tank()
 	control_player(pl)
+	upd_shrimp()
 	foreach(ent, move_ent)
 	try_door(pl)
 end

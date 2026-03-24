@@ -3,7 +3,10 @@ function control_player(pl)
 	local lift = 0.36
 	if (btn(0)) pl.dx -= accel
 	if (btn(1)) pl.dx += accel
-	if (btnp(5)) pl.dy -= lift
+	if (btnp(5)) then
+		pl.dy -= lift
+		sfx(2)
+	end
 
 end
 

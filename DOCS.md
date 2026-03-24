@@ -32,6 +32,10 @@ Created by `make_ent(k,x,y)`.
   - `false`: green/yellow line
 - `sr`: riley
 - `sd`: devil eyes
+- `st`: movement timer
+- `sdx`: desired horizontal direction
+- `so`: orientation (`0` left, `1` right)
+- `sj`: remaining hop-chain jumps
 
 ### Age
 
@@ -52,8 +56,19 @@ Created by `make_ent(k,x,y)`.
 
 - initial world no longer places one fixed adult shrimp
 - it now creates `4` fry shrimp
+- initial fry age is randomized in `3..6`
 - fry spawn in the coin box on horizontal screens `2` and `3`
 - spawn band: `x=7..12 + 16*(1 or 2)`, `y=9..10`
+
+### Movement
+
+- shrimp use a small timer-driven wander loop
+- they may idle, move left, move right, or hop
+- they now idle a bit more often / longer
+- a hop can start a short swim chain of `2..5` jumps total
+- shrimp animation now follows `sdx` / hopping state, not collision rebound velocity
+- age `0` fry are valid shrimp state and should still run shrimp logic
+- adults currently use a slightly stronger move/hop impulse than fry
 
 ### Palette Mapping
 
@@ -89,6 +104,8 @@ Created by `make_ent(k,x,y)`.
 - `gravity`: downward acceleration per update
 - `fric`: shared velocity decay multiplier
 - `bounce`: shared horizontal rebound amount on blocked movement
+- player-to-ent horizontal collisions currently use a slightly stronger rebound to help herd shrimp
+- if the player is moving upward into a shrimp, the shrimp gets a small upward push too
 
 ## Tank
 
@@ -102,10 +119,51 @@ Created by `make_ent(k,x,y)`.
 - `day`: current day number
 - `t`: tank update tick counter
 - `ct`: coin spawn timer
+- tank parameter status uses:
+  - `0`: healthy
+  - `1`: unhealthy
+  - `2`: dangerous
+- `st_col(s)` maps status to text color:
+  - healthy: green
+  - unhealthy: yellow
+  - dangerous: red
+
+### Parameter Ranges
+
+- `ph`
+  - healthy: `6.8..8.2`
+  - unhealthy: outside that, but within `6.3..8.7`
+  - dangerous: outside `6.3..8.7`
+
+- `amm`
+  - healthy: `0.0`
+  - unhealthy: `<0.4`
+  - dangerous: `>=0.4`
+
+- `tds`
+  - healthy: `100..300`
+  - unhealthy: outside that, but within `25..375`
+  - dangerous: outside `25..375`
+
+- `kh`
+  - healthy: `0..4`
+  - unhealthy: `5..7`
+  - dangerous: `8+`
+
+- `gh`
+  - healthy: `5..12`
+  - unhealthy: outside that, but within `3..14`
+  - dangerous: outside `3..14`
+
+- `stab`
+  - healthy: `>80`
+  - unhealthy: `>60`
+  - dangerous: `<=60`
 
 ## Coins
 
 - sprite id: `36`
+- frames: `1`
 - max active from respawn system: `8`
 - spawn band per screen: `x=7..12`, `y=9..10`
 - spawn screens: four horizontal screens via `+16 * screen_index`
@@ -116,6 +174,7 @@ Created by `make_ent(k,x,y)`.
 - `btn(1)`: right
 - `btn(2)`: up / interact with doors
 - `btn(5)`: swim upward
+- `sfx(2)`: jump / hop sound
 
 ## Doors
 

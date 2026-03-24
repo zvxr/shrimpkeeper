@@ -1,5 +1,6 @@
 function make_coin(x,y)
 	a = make_ent(36,x,y)
+	a.frames=1
 	a.grav=false
 	a.w=0.25 a.h=0.25
 end

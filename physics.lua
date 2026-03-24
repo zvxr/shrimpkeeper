@@ -26,10 +26,16 @@ function solid_ent(a, dx, dy)
 					collide_ent(a,a2) or
 					collide_ent(a2,a)
 				if ca then return false end
-				sfx(2)
+				if a==pl and a2.sa!=nil and a.dy<0 then
+					a2.dy-=0.25
+				elseif a2==pl and a.sa!=nil and a2.dy<0 then
+					a.dy-=0.25
+				end
 				if dx != 0 then
-					a.dx=-sgn(dx)*bounce
-					a2.dx=sgn(dx)*bounce
+					local b=bounce
+					if a==pl or a2==pl then b=0.5 end
+					a.dx=-sgn(dx)*b
+					a2.dx=sgn(dx)*b
 				else
 					a.dy=0
 					a2.dy=0
