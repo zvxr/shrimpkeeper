@@ -11,8 +11,6 @@ ent = {} -- all ents
 -- frame: current anim frame
 -- t: ticks alive / local timer
 -- grav: true if gravity applies
--- friction: velocity loss each frame
--- bounce: bounce factor on floor/ent hit
 -- frames: anim frame count
 -- fs: sprite step per frame
 -- sw,sh: sprite size in cells
@@ -27,8 +25,6 @@ function make_ent(k, x, y)
 		frame = 0,
 		t = 0,
 		grav = true,
-		friction = 0.15,
-		bounce  = 0.3,
 		frames = 2,
 		fs = 1,
 		sw = 1,
@@ -54,16 +50,16 @@ function move_ent(a)
 	if (a.grav) a.dy += gravity
 
 	if not move_x(a,a.dx) then
-		a.dx *= -a.bounce
+		a.dx = -sgn(a.dx)*bounce
 	end
 
 	if not move_y(a,a.dy) then
-		a.dy *= -a.bounce
+		a.dy = 0
 	end
 
 	-- apply friction
-	a.dx *= (1-a.friction)
-	a.dy *= (1-a.friction)
+	a.dx *= fric
+	a.dy *= fric
 
 	-- advance one frame every
 	-- time ent moves 1/4 of

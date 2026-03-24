@@ -1,4 +1,6 @@
 gravity = 0.02
+fric = 0.85
+bounce = 0.3
 
 -- flag 1: solid tile
 function solid(tx,ty)
@@ -6,8 +8,7 @@ function solid(tx,ty)
 end
 
 function solid_map(a,dx,dy)
-	return
-		solid(a.x+dx-a.w,a.y+dy-a.h) or
+	return solid(a.x+dx-a.w,a.y+dy-a.h) or
 		solid(a.x+dx+a.w,a.y+dy-a.h) or
 		solid(a.x+dx-a.w,a.y+dy+a.h) or
 		solid(a.x+dx+a.w,a.y+dy+a.h)
@@ -23,55 +24,26 @@ end
 
 function solid_ent(a, dx, dy)
 	for a2 in all(ent) do
-		if a2 != a then
-			if flr(a.x/16)==flr(a2.x/16) and
-				flr(a.y/16)==flr(a2.y/16) then
-
-			local x=(a.x+dx) - a2.x
-				local y=(a.y+dy) - a2.y
-
-				if ((abs(x) < (a.w+a2.w)) and
-					 (abs(y) < (a.h+a2.h)))
-				then
-
-				-- moving together?
-					-- this allows ents to
-				-- overlap initially
-				-- without sticking together
-
-				-- process each axis separately
-
-				-- along x
-
-				if (dx != 0 and abs(x) <
-				    abs(a.x-a2.x))
-				then
-
-					v=abs(a.dx)>abs(a2.dx) and
-					  a.dx or a2.dx
-					a.dx,a2.dx = v,v
-
-					local ca=
-					 collide_ent(a,a2) or
-					 collide_ent(a2,a)
-					return not ca
+		if a2 != a and
+			flr(a.x/16)==flr(a2.x/16) and
+			flr(a.y/16)==flr(a2.y/16) then
+			local x=(a.x+dx)-a2.x
+			local y=(a.y+dy)-a2.y
+			if abs(x) < a.w+a2.w and
+				abs(y) < a.h+a2.h then
+				local ca=
+					collide_ent(a,a2) or
+					collide_ent(a2,a)
+				if ca then return false end
+				sfx(2)
+				if dx != 0 then
+					a.dx=-sgn(dx)*bounce
+					a2.dx=sgn(dx)*bounce
+				else
+					a.dy=0
+					a2.dy=0
 				end
-
-				-- along y
-
-					if (dy != 0 and abs(y) <
-						   abs(a.y-a2.y)) then
-						v=abs(a.dy)>abs(a2.dy) and
-						  a.dy or a2.dy
-						a.dy,a2.dy = v,v
-
-					local ca=
-					 collide_ent(a,a2) or
-					 collide_ent(a2,a)
-					return not ca
-				end
-
-			end
+				return true
 			end
 		end
 	end
@@ -120,8 +92,6 @@ function collide_ent(a1,a2)
 		sfx(3)
 		return true
 	end
-
-	sfx(2) -- generic bump sound
 
 	return false
 end

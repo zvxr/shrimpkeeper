@@ -27,7 +27,6 @@ function init_world()
 	-- make player
 	pl = make_ent(21,20,9)
 	pl.frames=4
-	pl.bounce=0
 
 	shrimp = make_ent(37,25,9)
 	shrimp.frames=4
@@ -35,6 +34,4 @@ function init_world()
 	shrimp.sw=2
 	shrimp.sh=2
 	shrimp.w=0.9
-	shrimp.bounce=0
-	shrimp.friction=0.1
 end
