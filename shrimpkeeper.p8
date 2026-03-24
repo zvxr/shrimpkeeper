@@ -16,6 +16,7 @@ function _init()
 end
 
 function _update()
+	upd_tank()
 	control_player(pl)
 	foreach(ent, move_ent)
 	try_door(pl)
