@@ -3,12 +3,13 @@ ent = {} -- all ents
 -- make an ent
 -- and add to global collection
 -- k: base sprite id
--- x: horizontal center in tiles
--- y: height above the floor in tiles
+-- x,y: world position in tiles
 -- returns the new ent table
 --
 -- common ent fields:
--- dx,dy: velocity in tiles/frame
+-- dx: horizontal speed in tiles/frame
+-- z: height above the floor in tiles
+-- dy: vertical swim speed
 -- frame: current anim frame
 -- t: ticks alive / local timer
 -- grav: true if gravity applies
@@ -23,6 +24,7 @@ function make_ent(k, x, y)
 		k = k,
 		x = x,
 		y = y,
+		z = 0,
 		dx = 0,
 		dy = 0,
 		frame = 0,
@@ -49,34 +51,22 @@ function make_ent(k, x, y)
 end
 
 function move_ent(a)
-	-- x: horizontal position in tiles
-	-- y: height above floor in tiles
+	-- x,y: world position in tiles
+	-- z: height above the local floor
 	-- dy: upward speed; gravity lowers it
 
 	if (a.grav) a.dy -= gravity
 
-	if not solid_ent(a, a.dx, 0) then
-		a.x += a.dx
-	else
+	if not move_x(a,a.dx) then
 		a.dx *= -a.bounce
 	end
 
-	if not solid_ent(a, 0, a.dy) then
-		a.y += a.dy
-	else
+	if not move_z(a,a.dy) then
 		a.dy *= -a.bounce
 	end
 
-	if (a.x < a.w) then
-		a.x = a.w
-		a.dx *= -a.bounce
-	elseif (a.x > world_w-a.w) then
-		a.x = world_w-a.w
-		a.dx *= -a.bounce
-	end
-
-	if (a.y < 0) then
-		a.y = 0
+	if (a.z < 0) then
+		a.z = 0
 		a.dy *= -a.bounce
 	end
 
@@ -98,6 +88,6 @@ end
 
 function draw_ent(a)
 	local sx = (a.x * 8) - a.sw*4
-	local sy = flr_y - a.y*8 - a.sh*8
+	local sy = flr(a.y/16)*128 + flr_y - a.z*8 - a.sh*8
 	spr(a.k + flr(a.frame)*a.fs, sx, sy, a.sw, a.sh)
 end
