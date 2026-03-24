@@ -46,6 +46,10 @@ function move_ent(a)
 end
 
 function draw_ent(a)
+	if a.sa then
+		draw_shrimp(a)
+		return
+	end
 	local sx = (a.x * 8) - a.sw*4
 	local sy = (a.y * 8) - a.sh*4
 	spr(a.k + flr(a.frame)*a.fs, sx, sy, a.sw, a.sh)

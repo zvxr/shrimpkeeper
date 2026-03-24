@@ -23,15 +23,66 @@ Created by `make_ent(k,x,y)`.
 
 ## Shrimp
 
-- shrimp are currently the only `2x1` ent
-- current setup:
-- `k=37`
-- `frames=4`
-- `fs=2`
-- `sw=2`
-- `sh=1`
-- `w=0.9`
-- `h` currently uses the base default unless changed later
+- shrimp logic lives in `shrimp.lua`
+- shrimp-only fields use `s*`
+- `sa`: age in days
+- `sp`: purity
+- `sb`: base color line
+  - `true`: red/orange line
+  - `false`: green/yellow line
+- `sr`: riley
+- `sd`: devil eyes
+
+### Age
+
+- fry: `0..7`
+- adult: `8+`
+- fry use sprite strip `53..56` as `1x1`
+- adults use sprite strip starting at `37` with `+2` frame steps as `2x1`
+
+### Defaults
+
+- `sa=8`
+- `sp=0.5`
+- `sb`: 50/50 random
+- `sr`: 30/70 random
+- `sd`: 10/90 random
+
+### Initial Spawn
+
+- initial world no longer places one fixed adult shrimp
+- it now creates `4` fry shrimp
+- fry spawn in the coin box on horizontal screens `2` and `3`
+- spawn band: `x=7..12 + 16*(1 or 2)`, `y=9..10`
+
+### Palette Mapping
+
+- base sprite colors:
+- legs `4`
+- body `5`
+- back `6`
+- belly `7`
+- eyes `14`
+
+- `body`
+  - `sp>=2`: `[2/3]`
+  - `sp>=0.7`: `[8/11]`
+  - `sp>=0.5`: `[9/10]`
+  - else `[4/5]`
+
+- `back`
+  - `sp>=2`: `[2/3]`
+  - `sp>=0.9`: `[8/11]`
+  - `sp>=0.6`: `[9/10]`
+  - else `[4/5]`
+
+- `belly`
+  - if `sr` and `sp>0.7`: `7`
+  - else body color
+
+- `eyes`
+  - if `sd` and `sp>0.9`: `[10/9]`
+  - else `14`
 
 ## Physics
 

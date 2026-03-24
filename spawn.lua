@@ -18,16 +18,17 @@ function add_coin()
 	make_coin(7+flr(rnd(6))+r*16,9+flr(rnd(2)))
 end
 
+function add_fry()
+	make_fry(7+flr(rnd(6))+(1+flr(rnd(2)))*16,9+flr(rnd(2)))
+end
+
 function init_world()
 	ent = {}
 	init_tank()
 	pl = make_ent(21,20,9)
 	pl.frames=4
 
-	shrimp = make_ent(37,25,9)
-	shrimp.frames=4
-	shrimp.fs=2
-	shrimp.sw=2
-	shrimp.sh=1
-	shrimp.w=0.9
+	for i=1,4 do
+		add_fry()
+	end
 end

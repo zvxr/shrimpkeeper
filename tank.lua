@@ -19,7 +19,11 @@ end
 
 function upd_tank()
 	tank.t+=1
-	tank.day=1+flr(tank.t/1800)
+	local d=1+flr(tank.t/1800)
+	if d>tank.day then
+		tank.day=d
+		shrimp_day()
+	end
 	tank.ct+=1
 	if tank.ct>=120 then
 		tank.ct=0

@@ -5,6 +5,7 @@ __lua__
 #include ent.lua
 #include physics.lua
 #include tank.lua
+#include shrimp.lua
 #include player.lua
 #include spawn.lua
 
