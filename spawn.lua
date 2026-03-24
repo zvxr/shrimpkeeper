@@ -1,5 +1,6 @@
 function init_world()
 	ent = {}
+	init_tank()
 
 	-- create some ents
 
@@ -7,19 +8,11 @@ function init_world()
 	pl = make_ent(21,20,9)
 	pl.frames=4
 	pl.bounce=0
-	pl.money=0
-
-	-- bouncy ball
-	local ball = make_ent(33,23.5,9)
-	ball.dx=0.05
-	ball.dy=0.05
-	ball.friction=0.02
-	ball.bounce=1
 
 	-- treasure
 
 	for i=0,16 do
-		a = make_ent(35,20+cos(i/16)*3,9+sin(i/16)*2)
+		a = make_ent(36,20+cos(i/16)*3,9+sin(i/16)*2)
 		a.grav=false
 		a.w=0.25 a.h=0.25
 	end

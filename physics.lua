@@ -114,9 +114,9 @@ end
 function collide_ent(a1,a2)
 
 	-- player collects treasure
-	if (a1==pl and a2.k==35) then
+	if (a1==pl and a2.k==36) then
 		del(ent,a2)
-		pl.money+=1
+		tank.money+=1
 		sfx(3)
 		return true
 	end

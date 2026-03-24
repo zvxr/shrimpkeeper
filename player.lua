@@ -6,3 +6,19 @@ function control_player(pl)
 	if (btnp(5)) pl.dy -= lift
 
 end
+
+function touch_tile(a,x,y)
+	return abs(a.x-(x+.5)) < a.w+.5 and
+		abs(a.y-(y+.5)) < a.h+.5
+end
+
+function on_door(a)
+	return touch_tile(a,60,5) or
+		touch_tile(a,5,4)
+end
+
+function try_door(a)
+	if on_door(a) and btnp(2) then
+		sfx(2)
+	end
+end
