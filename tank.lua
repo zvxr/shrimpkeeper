@@ -62,12 +62,12 @@ function st_stab(v)
 end
 
 function tank_ok()
-	return st_ph(tank.ph)==0 and
-		st_amm(tank.amm)==0 and
-		st_tds(tank.tds)==0 and
-		st_kh(tank.kh)==0 and
-		st_gh(tank.gh)==0 and
-		st_stab(tank.stab)==0
+	return st_ph(tank.ph)<2 and
+		st_amm(tank.amm)<2 and
+		st_tds(tank.tds)<2 and
+		st_kh(tank.kh)<2 and
+		st_gh(tank.gh)<2 and
+		st_stab(tank.stab)<2
 end
 
 function tank_step()
@@ -85,8 +85,8 @@ function tank_step()
 			end
 		end
 	end
-	tank.stab=min(100,tank.stab+10)
-	tank.amm+=f+s*2+n/2
+	tank.stab=min(100,tank.stab+20)
+	tank.amm+=(f+s*2+n/2)*0.05
 	tank.kh-=0.2-n*0.1
 	tank.tds+=10
 end
@@ -99,7 +99,7 @@ function upd_tank()
 		shrimp_day()
 		breed_day()
 	end
-	if tank.t%300==0 then tank_step() end
+	if tank.t%750==0 then tank_step() end
 	tank.ct+=1
 	if tank.ct>=120 then
 		tank.ct=0
@@ -123,11 +123,11 @@ function use_item()
 		tank.i1p=0
 	elseif tank.i2>0 then
 		if tank.i2==49 then
-			tank.stab-=50
-			tank.amm/=2
+			tank.stab-=30
+			tank.amm=max(0,tank.amm-1)
 			tank.kh-=1
 			tank.gh-=1
-			tank.tds-=50
+			tank.tds-=30
 		elseif tank.i2==50 then
 			tank.stab-=20
 			tank.kh+=2
@@ -161,6 +161,7 @@ function buy_shop()
 		end
 	end
 	tank.money-=c
+	tank.sm=false
 end
 
 function upd_shop()
@@ -168,9 +169,9 @@ function upd_shop()
 		tank.ss=max(1,tank.ss-1)
 	elseif btnp(3) then
 		tank.ss=min(5,tank.ss+1)
-	elseif btnp(4) then
-		buy_shop()
 	elseif btnp(5) then
+		buy_shop()
+	elseif btnp(4) then
 		tank.sm=false
 	end
 end
@@ -194,14 +195,14 @@ end
 
 function draw_tank_hud()
 	print("ph:"..fmt1(tank.ph),8,3,st_col(st_ph(tank.ph)))
-	print("amm:"..tank.amm,36,3,st_col(st_amm(tank.amm)))
-	print("$"..tank.money,102,9,10)
+	print("amm:"..fmt1(tank.amm),36,3,st_col(st_amm(tank.amm)))
+	print("$"..tank.money,72,15,10)
 	print("day:"..tank.day,102,15,11)
 	print("kh:"..fmt1(tank.kh),8,9,st_col(st_kh(tank.kh)))
 	print("gh:"..fmt1(tank.gh),36,9,st_col(st_gh(tank.gh)))
 	print(tank.bm,36,15,7)
-	print("tds:"..tank.tds,64,3,st_col(st_tds(tank.tds)))
-	print("stab:"..tank.stab,64,9,st_col(st_stab(tank.stab)))
+	print("tds:"..tank.tds,72,3,st_col(st_tds(tank.tds)))
+	print("stab:"..tank.stab,72,9,st_col(st_stab(tank.stab)))
 	if tank.i1==1 then
 		spr(48,16,16)
 	elseif tank.i1==2 then

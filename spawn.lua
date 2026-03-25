@@ -33,5 +33,4 @@ function init_world()
 	for i=1,4 do
 		add_fry()
 	end
-	make_snail(24,9)
 end

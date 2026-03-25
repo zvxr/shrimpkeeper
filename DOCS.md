@@ -82,7 +82,7 @@ Created by `make_ent(k,x,y)`.
   - two adult shrimp
   - same `sb`
   - same room
-  - all tank parameters healthy
+  - no tank parameter is dangerous/red
   - 50% success roll
 - success creates one fry with `sa=1`
 - baby values:
@@ -152,7 +152,6 @@ Created by `make_ent(k,x,y)`.
   - else `5`
 - snails do not age or breed
 - snails wander slowly and mostly idle
-- the initial world creates `1` snail with `np=0.5` and random `nb`
 
 ## Tank
 
@@ -174,7 +173,7 @@ Created by `make_ent(k,x,y)`.
 - `i1p`: stored snail purity for creature slot
 - `i1b`: stored snail base color for creature slot
 - one day is currently `1500` updates
-- tank parameter drift is currently applied every `300` updates (`5` times/day)
+- tank parameter drift is currently applied every `750` updates
 - tank parameter status uses:
   - `0`: healthy
   - `1`: unhealthy
@@ -183,6 +182,7 @@ Created by `make_ent(k,x,y)`.
   - healthy: green
   - unhealthy: yellow
   - dangerous: red
+- `ph`, `amm`, `kh`, and `gh` display with one decimal digit
 
 ### Parameter Ranges
 
@@ -218,9 +218,9 @@ Created by `make_ent(k,x,y)`.
 
 ### Drift
 
-- every `300` updates:
-  - `stab += 10`, capped at `100`
-  - `amm += fry + adult_shrimp*2 + snails/2`
+- every `750` updates:
+  - `stab += 20`, capped at `100`
+  - `amm += (fry + adult_shrimp*2 + snails/2) * 0.05`
   - `kh -= 0.2`, then `+0.1` per snail
   - `tds += 10`
 
@@ -243,8 +243,8 @@ Created by `make_ent(k,x,y)`.
 - `sfx(2)`: jump / hop sound
 - in the shop:
   - `up/down`: move selection
-  - `Z`: buy selected item
-  - `X`: close shop
+  - `X`: buy selected item and close shop
+  - `Z`: close shop
 
 ## Dialog
 
@@ -275,11 +275,11 @@ Created by `make_ent(k,x,y)`.
 - pressing `Z` in normal play uses inventory when not inspecting/holding a nearby creature
 - using a creature item spawns it next to the player and clears the slot
 - using `water change`:
-  - `stab -= 50`
-  - `amm /= 2`
+  - `stab -= 30`
+  - `amm -= 1.0`, floored at `0`
   - `kh -= 1`
   - `gh -= 1`
-  - `tds -= 50`
+  - `tds -= 30`
 - using `mineral kh+`:
   - `stab -= 20`
   - `kh += 2`
