@@ -86,7 +86,7 @@ function tank_step()
 		end
 	end
 	tank.stab=min(100,tank.stab+20)
-	tank.amm+=(f+s*2+n/2)*0.05
+	tank.amm+=(f+s*2+n/2)*0.025
 	tank.kh-=0.2-n*0.1
 	tank.tds+=10
 end

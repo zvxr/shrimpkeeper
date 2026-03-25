@@ -220,7 +220,7 @@ Created by `make_ent(k,x,y)`.
 
 - every `750` updates:
   - `stab += 20`, capped at `100`
-  - `amm += (fry + adult_shrimp*2 + snails/2) * 0.05`
+  - `amm += (fry + adult_shrimp*2 + snails/2) * 0.025`
   - `kh -= 0.2`, then `+0.1` per snail
   - `tds += 10`
 
