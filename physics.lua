@@ -15,7 +15,8 @@ end
 
 function solid_ent(a, dx, dy)
 	for a2 in all(ent) do
-		if a2 != a and
+		if a.mp==nil and a2.mp==nil and
+			a2 != a and
 			flr(a.x/16)==flr(a2.x/16) and
 			flr(a.y/16)==flr(a2.y/16) then
 			local x=(a.x+dx)-a2.x
@@ -37,6 +38,7 @@ function solid_ent(a, dx, dy)
 				end
 				if dx != 0 then
 					local b=bounce
+					if a.mb!=nil or a2.mb!=nil then b=0.5 end
 					if a==pl or a2==pl then b=0.5 end
 					a.dx=-sgn(dx)*b
 					a2.dx=sgn(dx)*b

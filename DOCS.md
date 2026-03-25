@@ -29,7 +29,7 @@ Created by `make_ent(k,x,y)`.
 - `sp`: purity
 - `sb`: base color line
   - `true`: red/orange line
-  - `false`: green/yellow line
+  - `false`: yellow/green line
 - `sr`: riley
 - `sd`: devil eyes
 - `st`: movement timer
@@ -42,6 +42,8 @@ Created by `make_ent(k,x,y)`.
 
 - fry: `0..7`
 - adult: `8+`
+- on each new day, shrimp age by `1`
+- once a shrimp is `30+` days old, each new day has a `50%` chance it dies and disappears
 - fry use sprite strip `53..56` as `1x1`
 - adults use sprite strip starting at `37` with `+2` frame steps as `2x1`
 - fry hitbox is currently smaller than the full tile
@@ -139,7 +141,7 @@ Created by `make_ent(k,x,y)`.
 - `np`: purity
 - `nb`: base color line
   - `true`: red/orange line
-  - `false`: green/yellow line
+  - `false`: yellow/green line
 - `nt`: movement timer
 - `ndx`: desired horizontal direction
 - `no`: orientation (`0` left, `1` right)
@@ -152,6 +154,24 @@ Created by `make_ent(k,x,y)`.
   - else `5`
 - snails do not age or breed
 - snails wander slowly and mostly idle
+
+## Microorganisms
+
+- microorganism logic lives in `micro.lua`
+- use sprite strip `59..60`
+- `mp`: microorganism marker
+- they are background only
+- they do not collide
+- they do not move once placed
+
+## Moss Balls
+
+- moss ball logic lives in `moss.lua`
+- use sprite strip `61..62`
+- `mb`: moss ball marker
+- they are solid and can be pushed by the player or shrimp
+- they do not move on their own
+- they animate while moving after being hit
 
 ## Tank
 
@@ -166,8 +186,9 @@ Created by `make_ent(k,x,y)`.
 - `t`: tank update tick counter
 - `ct`: coin spawn timer
 - `bm`: short breeding debug text, including `Mutation!`
-- `sm`: whether the shop menu is open
+- `sm`: shop mode (`0` off, `1` normal, `2` plant, `3` shrimp sell); compare with `>0`
 - `ss`: current shop selection (`1..5`)
+- `ps`: whether the plant shop is unlocked
 - `i1`: creature inventory slot at `(2,2)`
 - `i2`: item inventory slot at `(3,2)`
 - `i1p`: stored snail purity for creature slot
@@ -219,9 +240,10 @@ Created by `make_ent(k,x,y)`.
 ### Drift
 
 - every `750` updates:
-  - `stab += 20`, capped at `100`
-  - `amm += (fry + adult_shrimp*2 + snails/2) * 0.025`
-  - `kh -= 0.2`, then `+0.1` per snail
+  - `stab += 30 + moss_balls*2`, capped at `100`
+  - `amm += (fry + adult_shrimp*2 + snails/2) * (0.025 - microorganisms*0.005)`
+  - `kh -= 0.2`, then `+0.1` per snail, floored at `0`
+  - `gh += moss_balls * 0.05`
   - `tds += 10`
 
 ## Coins
@@ -236,7 +258,7 @@ Created by `make_ent(k,x,y)`.
 
 - `btn(0)`: left
 - `btn(1)`: right
-- `btn(2)`: up / interact with doors
+- `btn(2)`: up / interact with doors or shops
 - `btn(3)+btnp(4)`: hold a nearby shrimp or snail if none is held
 - `btn(4)`: inspect a nearby shrimp or snail, drop the held creature, or close dialog
 - `btn(5)`: swim upward
@@ -264,12 +286,20 @@ Created by `make_ent(k,x,y)`.
 ## Shop
 
 - pressing `up` on a door opens the shop
+- once `10` adult shrimp exist, the plant shop unlocks permanently
+- plant shop graphic `12` is drawn at `(25,4)`
+- pressing `up` on the plant shop opens the plant menu
+- on day `10+`, the shrimp shop graphic `13` is drawn at `(45,5)`
+- pressing `up` on the shrimp shop opens the shrimp sell prompt
 - purchases only work if `money>=cost`
 - creature purchases use slot `(2,2)`
   - `snail` cost `20`, icon `48`
   - `fancy` cost `30`, icon `52`
+  - `bacter ae` cost `30`, icon `16`
+  - `moss ball` cost `12`, icon `20`
 - item purchases use slot `(3,2)`
   - `water change` cost `5`, icon `49`
+  - `ro water change` cost `6`, icon `32`
   - `mineral kh+` cost `10`, icon `50`
   - `mineral gh+` cost `10`, icon `51`
 - pressing `Z` in normal play uses inventory when not inspecting/holding a nearby creature
@@ -278,19 +308,33 @@ Created by `make_ent(k,x,y)`.
   - `stab -= 30`
   - `amm -= 1.0`, floored at `0`
   - `kh -= 1`
-  - `gh -= 1`
+  - `gh -= 0.5`
   - `tds -= 30`
+- using `ro water change`:
+  - `ph -= 0.2`
+  - `amm -= 1.2`, floored at `0`
+  - `kh -= 2`
+  - `gh -= 1`
+  - `tds -= 80`
+- `kh`, `gh`, and `tds` are floored at `0`
 - using `mineral kh+`:
   - `stab -= 20`
   - `kh += 2`
   - `gh += 2`
-  - `tds += 50`
+  - `tds += 200`
 - using `mineral gh+`:
   - `stab -= 20`
-  - `gh += 2`
+  - `gh += 4`
   - `tds += 25`
 - buying `snail` stores random `np=0..1` and random `nb`
 - using `snail` spawns that stored snail next to the player
+- using `bacter ae` places a microorganism next to the player
+- using `moss ball` places a moss ball next to the player
+- if no held shrimp is available, the shrimp shop shows `No shrimp to sell`
+- shrimp sell value is `flr(sp*5) + 2 if sr + 5 if sd`
+- in the shrimp shop:
+  - `X`: accept sale
+  - `Z`: exit
 - using `fancy` spawns an adult shrimp with:
   - `sp=0.7..1.2`
   - `sr` 50% chance

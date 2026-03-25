@@ -20,9 +20,23 @@ function on_door(a)
 		touch_tile(a,5,4)
 end
 
+function on_plant(a)
+	return tank.ps and touch_tile(a,25,4)
+end
+
+function on_shrimp_shop(a)
+	return tank.day>=10 and touch_tile(a,45,5)
+end
+
 function try_door(a)
 	if on_door(a) and btnp(2) then
-		tank.sm=true
+		tank.sm=1
+		tank.ss=1
+	elseif on_plant(a) and btnp(2) then
+		tank.sm=2
+		tank.ss=1
+	elseif on_shrimp_shop(a) and btnp(2) then
+		tank.sm=3
 		tank.ss=1
 	end
 end

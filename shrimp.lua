@@ -34,7 +34,7 @@ function make_shrimp(x,y)
 end
 
 function shrimp_line(a)
-	return a.sb and "red" or "green"
+	return a.sb and "red" or "yellow"
 end
 
 function near_pet(a)
@@ -93,7 +93,7 @@ function draw_pet_dialog(a)
 	else
 		print("snail",52,32,7)
 		print("pur:"..a.np,28,50,7)
-		print("line:"..(a.nb and "red" or "green"),28,58,7)
+		print("line:"..(a.nb and "red" or "yellow"),28,58,7)
 	end
 end
 
@@ -203,7 +203,11 @@ function shrimp_day()
 	for a in all(ent) do
 		if a.sa!=nil then
 			a.sa+=1
-			shrimp_size(a)
+			if a.sa>=30 and rnd(1)<0.5 then
+				del(ent,a)
+			else
+				shrimp_size(a)
+			end
 		end
 	end
 end

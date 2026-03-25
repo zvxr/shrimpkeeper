@@ -54,6 +54,14 @@ function draw_ent(a)
 		draw_snail(a)
 		return
 	end
+	if a.mp!=nil then
+		draw_micro(a)
+		return
+	end
+	if a.mb!=nil then
+		draw_moss(a)
+		return
+	end
 	local sx = (a.x * 8) - a.sw*4
 	local sy = (a.y * 8) - a.sh*4
 	spr(a.k + flr(a.frame)*a.fs, sx, sy, a.sw, a.sh)
