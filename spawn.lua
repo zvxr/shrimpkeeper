@@ -19,8 +19,9 @@ function add_coin()
 	make_coin(7+flr(rnd(6))+r*16,9+flr(rnd(2)))
 end
 
-function add_fry()
-	make_fry(7+flr(rnd(6))+(1+flr(rnd(2)))*16,9+flr(rnd(2)))
+function add_fry(c)
+	a=make_fry(7+flr(rnd(6))+(1+flr(rnd(2)))*16,9+flr(rnd(2)))
+	if c!=nil then a.sb=c end
 end
 
 function init_world()
@@ -30,7 +31,8 @@ function init_world()
 	pl = make_ent(21,20,9)
 	pl.frames=4
 
-	for i=1,4 do
-		add_fry()
-	end
+	add_fry(true)
+	add_fry(true)
+	add_fry(false)
+	add_fry(false)
 end

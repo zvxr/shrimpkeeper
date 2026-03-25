@@ -28,6 +28,10 @@ function on_shrimp_shop(a)
 	return tank.day>=10 and touch_tile(a,45,5)
 end
 
+function on_disc(a)
+	return disc_ok() and touch_tile(a,33,11)
+end
+
 function try_door(a)
 	if on_door(a) and btnp(2) then
 		tank.sm=1
@@ -37,6 +41,9 @@ function try_door(a)
 		tank.ss=1
 	elseif on_shrimp_shop(a) and btnp(2) then
 		tank.sm=3
+		tank.ss=1
+	elseif on_disc(a) and btnp(2) then
+		tank.sm=4
 		tank.ss=1
 	end
 end

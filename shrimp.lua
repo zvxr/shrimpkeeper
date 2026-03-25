@@ -1,5 +1,5 @@
 function shrimp_size(a)
-	if a.sa<8 then
+	if a.sa<7 then
 		a.k=53
 		a.fs=1
 		a.frames=4
@@ -110,7 +110,7 @@ function make_baby(x,y,a,b)
 	local hi=max(a.sp,b.sp)+0.2
 	local m=false
 	c.sa=1
-	c.sp=lo+rnd(hi-lo)
+	c.sp=lo+rnd(hi-lo)+tank.kh/4
 	c.sb=a.sb
 	c.sr=a.sr and b.sr or
 		((a.sr or b.sr) and rnd(1)<0.5)
@@ -130,9 +130,9 @@ function breed_day()
 		return
 	end
 	for a in all(ent) do
-		if a.sa and a.sa>=8 then
+		if a.sa and a.sa>=7 then
 			for b in all(ent) do
-				if b!=a and b.sa and b.sa>=8 and
+				if b!=a and b.sa and b.sa>=7 and
 					a.sb==b.sb and
 					flr(a.x/16)==flr(b.x/16) and
 					flr(a.y/16)==flr(b.y/16) then
@@ -173,7 +173,7 @@ function upd_shrimp()
 			end
 			if a.sj>0 and rnd(1)<0.18 then
 				a.sj-=1
-				a.dy-=a.sa<8 and 0.45 or 0.6
+				a.dy-=a.sa<7 and 0.45 or 0.6
 				sfx(2)
 			end
 			if a.st>0 then
@@ -188,13 +188,13 @@ function upd_shrimp()
 					a.so=a.sdx>0 and 1 or 0
 					a.st=15+flr(rnd(30))
 					if rnd(1)<0.12 then
-						a.dy-=a.sa<8 and 0.45 or 0.6
+						a.dy-=a.sa<7 and 0.45 or 0.6
 						a.sj=1+flr(rnd(4))
 						sfx(2)
 					end
 				end
 			end
-			a.dx+=a.sdx*(a.sa<8 and 0.03 or 0.04)
+			a.dx+=a.sdx*(a.sa<7 and 0.03 or 0.04)
 		end
 	end
 end

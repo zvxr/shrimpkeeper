@@ -14,6 +14,8 @@ function init_tank()
 		sm=0,
 		ss=1,
 		ps=false,
+		rx=0,
+		go=false,
 		i1=0,
 		i2=0,
 		i1p=0,
@@ -37,7 +39,7 @@ end
 
 function st_amm(v)
 	if v==0 then return 0 end
-	return v<0.4 and 1 or 2
+	return v<0.5 and 1 or 2
 end
 
 function st_tds(v)
@@ -71,12 +73,57 @@ function tank_ok()
 		st_stab(tank.stab)<2
 end
 
+function tank_red()
+	return st_ph(tank.ph)==2 or
+		st_amm(tank.amm)==2 or
+		st_tds(tank.tds)==2 or
+		st_kh(tank.kh)==2 or
+		st_gh(tank.gh)==2 or
+		st_stab(tank.stab)==2
+end
+
+function chk_go()
+	if tank.stab<=0 or tank.amm>=3 or tank.rx>=3 then
+		tank.go=true
+	end
+end
+
 function adult_n()
 	local s=0
 	for a in all(ent) do
-		if a.sa!=nil and a.sa>=8 then s+=1 end
+		if a.sa!=nil and a.sa>=7 then s+=1 end
 	end
 	return s
+end
+
+function disc_ok()
+	local a=false
+	local b=false
+	local c=false
+	local d=false
+	for e in all(ent) do
+		if e.np!=nil then
+			local x=flr(e.x/16)
+			if x==0 then
+				a=true
+			elseif x==1 then
+				b=true
+			elseif x==2 then
+				c=true
+			elseif x==3 then
+				d=true
+			end
+		end
+	end
+	return a and b and c and d
+end
+
+function max_pur()
+	local p=0
+	for a in all(ent) do
+		if a.sa!=nil and a.sp>p then p=a.sp end
+	end
+	return p
 end
 
 function tank_step()
@@ -93,30 +140,36 @@ function tank_step()
 		elseif a.np!=nil then
 			n+=1
 		elseif a.sa!=nil then
-			if a.sa<8 then
+			if a.sa<7 then
 				f+=1
 			else
 				s+=1
 			end
 		end
 	end
-	tank.stab=min(100,tank.stab+30+b*2)
-	tank.amm+=(f+s*2+n/2)*(0.025-m*0.005)
-	tank.kh=max(0,tank.kh-0.2-n*0.1)
-	tank.gh+=b*0.05
+	tank.stab=min(100,tank.stab+30+b*5)
+	tank.amm=max(0,tank.amm+(f-n+s*2)*(0.025-m*0.005))
+	tank.kh=max(0,tank.kh-0.1)
+	tank.gh=max(0,tank.gh+b*0.05-n*0.05)
 	tank.tds+=10
 end
 
 function upd_tank()
 	tank.t+=1
-	if not tank.ps and adult_n()>=10 then tank.ps=true end
+	if not tank.ps and adult_n()>=8 then tank.ps=true end
 	local d=1+flr(tank.t/1500)
 	if d>tank.day then
 		tank.day=d
+		if tank_red() then
+			tank.rx+=1
+		elseif tank.rx>0 then
+			tank.rx-=1
+		end
 		shrimp_day()
 		breed_day()
 	end
 	if tank.t%750==0 then tank_step() end
+	chk_go()
 	tank.ct+=1
 	if tank.ct>=120 then
 		tank.ct=0
@@ -146,20 +199,26 @@ function use_item()
 		if tank.i2==49 then
 			tank.stab-=30
 			tank.amm=max(0,tank.amm-1)
+			if tank.ph<7 then
+				tank.ph=min(7,tank.ph+0.1)
+			elseif tank.ph>7 then
+				tank.ph=max(7,tank.ph-0.1)
+			end
 			tank.kh=max(0,tank.kh-1)
 			tank.gh=max(0,tank.gh-0.5)
 			tank.tds=max(0,tank.tds-30)
 		elseif tank.i2==32 then
-			tank.ph-=0.2
-			tank.amm=max(0,tank.amm-1.2)
+			tank.stab-=30
+			tank.ph-=0.3
+			tank.amm=max(0,tank.amm-2)
 			tank.kh=max(0,tank.kh-2)
-			tank.gh=max(0,tank.gh-1)
+			tank.gh=max(0,tank.gh-2)
 			tank.tds=max(0,tank.tds-80)
 		elseif tank.i2==50 then
 			tank.stab-=20
-			tank.kh+=2
+			tank.kh+=3
 			tank.gh+=2
-			tank.tds+=200
+			tank.tds+=40
 		else
 			tank.stab-=20
 			tank.gh+=4
@@ -167,101 +226,7 @@ function use_item()
 		end
 		tank.i2=0
 	end
-end
-
-function shop_cost()
-	if tank.sm==2 then
-		return tank.ss==1 and 6 or tank.ss==2 and 30 or 12
-	end
-	return tank.ss==1 and 5 or tank.ss<4 and 10 or tank.ss==4 and 20 or 30
-end
-
-function shrimp_price()
-	if ha and ha.sa!=nil then
-		return flr(ha.sp*5)+(ha.sr and 2 or 0)+(ha.sd and 5 or 0)
-	end
-	return 0
-end
-
-function buy_shop()
-	local c=shop_cost()
-	if tank.money<c then return end
-	if tank.sm==2 then
-		if tank.ss==1 then
-			if tank.i2>0 then return end
-			tank.i2=32
-		else
-			if tank.i1>0 then return end
-			tank.i1=tank.ss+1
-		end
-	elseif tank.ss<4 then
-		if tank.i2>0 then return end
-		tank.i2=48+tank.ss
-	else
-		if tank.i1>0 then return end
-		tank.i1=tank.ss-3
-		if tank.i1==1 then
-			tank.i1p=rnd(1)
-			tank.i1b=rnd(1)<0.5
-		end
-	end
-	tank.money-=c
-	tank.sm=0
-end
-
-function upd_shop()
-	if tank.sm==3 then
-		if btnp(5) and ha and ha.sa!=nil then
-			tank.money+=shrimp_price()
-			ha=nil
-			tank.sm=0
-		elseif btnp(4) then
-			tank.sm=0
-		end
-		return
-	end
-	if btnp(2) then
-		tank.ss=max(1,tank.ss-1)
-	elseif btnp(3) then
-		tank.ss=min(tank.sm==2 and 3 or 5,tank.ss+1)
-	elseif btnp(5) then
-		buy_shop()
-	elseif btnp(4) then
-		tank.sm=0
-	end
-end
-
-function draw_shop_row(n,y,s,c)
-	print(tank.ss==n and ">" or " ",18,y,7)
-	print(s,26,y,7)
-	print("$"..c,88,y,tank.money<c and 8 or 11)
-end
-
-function draw_shop()
-	rectfill(12,24,116,88,1)
-	rect(12,24,116,88,7)
-	if tank.sm==3 then
-		if ha and ha.sa!=nil then
-			print("sell shrimp",36,40,7)
-			print("for $"..shrimp_price().."?",42,56,7)
-			print("x yes  z no",34,72,7)
-		else
-			print("no shrimp to sell",24,52,7)
-			print("z exit",46,72,7)
-		end
-	elseif tank.sm==2 then
-		print("plant",52,28,7)
-		draw_shop_row(1,38,"ro water",6)
-		draw_shop_row(2,48,"bacter ae",30)
-		draw_shop_row(3,58,"moss ball",12)
-	else
-		print("shop",56,28,7)
-		draw_shop_row(1,38,"water",5)
-		draw_shop_row(2,48,"kh+",10)
-		draw_shop_row(3,58,"gh+",10)
-		draw_shop_row(4,68,"snail",20)
-		draw_shop_row(5,78,"fancy",30)
-	end
+	chk_go()
 end
 
 function draw_tank_hud()
@@ -274,6 +239,7 @@ function draw_tank_hud()
 	print(tank.bm,36,15,7)
 	print("tds:"..tank.tds,72,3,st_col(st_tds(tank.tds)))
 	print("stab:"..tank.stab,72,9,st_col(st_stab(tank.stab)))
+	if tank.rx>0 then print(sub("xxx",1,tank.rx),102,9,8) end
 	if tank.i1==1 then
 		spr(48,16,16)
 	elseif tank.i1==2 then
@@ -284,4 +250,13 @@ function draw_tank_hud()
 		spr(20,16,16)
 	end
 	if tank.i2>0 then spr(tank.i2,24,16) end
+end
+
+function draw_go()
+	rectfill(20,36,108,84,0)
+	rect(20,36,108,84,8)
+	print("game over",40,42,8)
+	print("days:"..tank.day,28,54,7)
+	print("adults:"..adult_n(),28,64,7)
+	print("max pur:"..fmt1(max_pur()),28,74,7)
 end
