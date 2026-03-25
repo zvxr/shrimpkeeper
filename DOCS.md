@@ -40,8 +40,8 @@ Created by `make_ent(k,x,y)`.
 
 ### Age
 
-- fry: `0..6`
-- adult: `7+`
+- fry: `0..5`
+- adult: `6+`
 - on each new day, shrimp age by `1`
 - once a shrimp is `30+` days old, each new day has a `50%` chance it dies and disappears
 - fry use sprite strip `53..56` as `1x1`
@@ -86,7 +86,9 @@ Created by `make_ent(k,x,y)`.
   - same `sb`
   - same room
   - no tank parameter is dangerous/red
-  - 50% success roll
+  - 50% success roll per room
+- each of the `4` rooms is checked separately
+- within an eligible room, a random same-line adult pair is used
 - success creates one fry with `sa=1`
 - baby values:
   - `sp`: random from `(lowest-0.2)` to `(highest+0.2)`, then `+ tank.kh/4`
@@ -188,7 +190,7 @@ Created by `make_ent(k,x,y)`.
 - `t`: tank update tick counter
 - `ct`: coin spawn timer
 - `bm`: short breeding debug text, including `Mutation!`
-- `sm`: shop mode (`0` off, `1` normal, `2` plant, `3` shrimp sell, `4` discount); compare with `>0`
+- `sm`: shop mode (`0` off, `1` normal, `2` plant, `3` shrimp sell, `4` discount, `5` cull); compare with `>0`
 - `ss`: current shop selection (`1..5`)
 - `ps`: whether the plant shop is unlocked
 - `rx`: red-condition warning count
@@ -247,11 +249,12 @@ Created by `make_ent(k,x,y)`.
 
 ### Drift
 
+- every `375` updates:
+  - `stab += 15 + moss_balls*2.5`, capped at `100`
 - every `750` updates:
-  - `stab += 30 + moss_balls*5`, capped at `100`
   - `amm += (fry - snails + adult_shrimp*2) * (0.025 - microorganisms*0.005)`, floored at `0`
   - `kh -= 0.1`, floored at `0`
-  - `gh += moss_balls * 0.05 - snails * 0.05`, floored at `0`
+  - `gh -= snails * 0.05`, floored at `0`
   - `tds += 10`
 
 ### Game Over
@@ -311,6 +314,8 @@ Created by `make_ent(k,x,y)`.
 - pressing `up` on the shrimp shop opens the shrimp sell prompt
 - if there is a snail in each of the four rooms, the discount shop graphic `14` is drawn at `(33,11)`
 - pressing `up` on the discount shop opens the discount menu
+- if there is an adult shrimp with `purity >= 2.0`, the culling shop graphic `15` is drawn at `(30,10)`
+- pressing `up` on the culling shop opens the cull menu
 - purchases only work if `money>=cost`
 - creature purchases use slot `(2,2)`
   - `snail` cost `20`, icon `48`
@@ -356,6 +361,11 @@ Created by `make_ent(k,x,y)`.
   - `water change` cost `4`
   - `moss ball` cost `10`
   - `fancy` cost `20`
+- culling shop sells:
+  - remove fry cost `10`
+  - remove adult cost `8`
+  - only shrimp with `purity < 0.5` are eligible
+  - if no eligible shrimp exist, it shows `no naturals`
 - if no held shrimp is available, the shrimp shop shows `No shrimp to sell`
 - shrimp with `sp < 1` cannot be sold
 - shrimp sell value is `(flr(sp*5) + 2 if sr + 5 if sd) * 2`

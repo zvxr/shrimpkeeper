@@ -1,4 +1,7 @@
 function shop_cost()
+	if tank.sm==5 then
+		return tank.ss==1 and 10 or 8
+	end
 	if tank.sm==4 then
 		return tank.ss==1 and 4 or tank.ss==2 and 10 or 20
 	end
@@ -15,10 +18,39 @@ function shrimp_price()
 	return 0
 end
 
+function cull_n(k)
+	local n=0
+	for a in all(ent) do
+		if a.sa!=nil and a.sp<0.5 then
+			if k==1 and a.sa<6 or k==2 and a.sa>=6 then
+				n+=1
+			end
+		end
+	end
+	return n
+end
+
+function cull_one(k)
+	for a in all(ent) do
+		if a.sa!=nil and a.sp<0.5 then
+			if k==1 and a.sa<6 or k==2 and a.sa>=6 then
+				del(ent,a)
+				return true
+			end
+		end
+	end
+end
+
 function buy_shop()
 	local c=shop_cost()
 	if tank.money<c then return end
-	if tank.sm==4 then
+	if tank.sm==5 then
+		if cull_one(tank.ss) then
+			tank.money-=c
+			tank.sm=0
+		end
+		return
+	elseif tank.sm==4 then
 		if tank.ss==1 then
 			if tank.i2>0 then return end
 			tank.i2=49
@@ -60,6 +92,22 @@ function upd_shop()
 		end
 		return
 	end
+	if tank.sm==5 then
+		if btnp(2) or btnp(3) then
+			if cull_n(1)>0 and cull_n(2)>0 then
+				tank.ss=3-tank.ss
+			elseif cull_n(1)>0 then
+				tank.ss=1
+			elseif cull_n(2)>0 then
+				tank.ss=2
+			end
+		elseif btnp(5) then
+			buy_shop()
+		elseif btnp(4) then
+			tank.sm=0
+		end
+		return
+	end
 	if btnp(2) then
 		tank.ss=max(1,tank.ss-1)
 	elseif btnp(3) then
@@ -93,6 +141,14 @@ function draw_shop()
 			end
 		else
 			print("no shrimp to sell",24,52,7)
+			print("z exit",46,72,7)
+		end
+	elseif tank.sm==5 then
+		print("cull",52,28,7)
+		if cull_n(1)>0 then draw_shop_row(1,42,"fry",10) end
+		if cull_n(2)>0 then draw_shop_row(2,54,"adult",8) end
+		if cull_n(1)<1 and cull_n(2)<1 then
+			print("no naturals",30,54,7)
 			print("z exit",46,72,7)
 		end
 	elseif tank.sm==4 then

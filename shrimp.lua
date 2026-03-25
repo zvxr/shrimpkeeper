@@ -1,5 +1,5 @@
 function shrimp_size(a)
-	if a.sa<7 then
+	if a.sa<6 then
 		a.k=53
 		a.fs=1
 		a.frames=4
@@ -123,31 +123,60 @@ function make_baby(x,y,a,b)
 	return m
 end
 
+function breed_room(r)
+	local c=nil
+	local nr=0
+	local ny=0
+	for a in all(ent) do
+		if a.sa and a.sa>=6 and flr(a.x/16)==r then
+			if a.sb then
+				nr+=1
+			else
+				ny+=1
+			end
+		end
+	end
+	if nr<2 and ny<2 then return end
+	if nr>1 and (ny<2 or rnd(1)<0.5) then
+		c=true
+	else
+		c=false
+	end
+	local a1=nil
+	local a2=nil
+	local n=0
+	for a in all(ent) do
+		if a.sa and a.sa>=6 and a.sb==c and flr(a.x/16)==r then
+			n+=1
+			if n==1 then
+				a1=a
+			elseif n==2 then
+				a2=a
+			else
+				if rnd(n)<1 then
+					a1=a
+				elseif rnd(n)<1 then
+					a2=a
+				end
+			end
+		end
+	end
+	if not a2 then return end
+	if rnd(1)<0.5 then
+		tank.bm=make_baby(7+flr(rnd(6))+r*16,9+flr(rnd(2)),a1,a2) and "Mutation!" or "br:bred"
+	else
+		tank.bm="br:fail"
+	end
+end
+
 function breed_day()
 	tank.bm="br:none"
 	if not tank_ok() then
 		tank.bm="br:bad"
 		return
 	end
-	for a in all(ent) do
-		if a.sa and a.sa>=7 then
-			for b in all(ent) do
-				if b!=a and b.sa and b.sa>=7 and
-					a.sb==b.sb and
-					flr(a.x/16)==flr(b.x/16) and
-					flr(a.y/16)==flr(b.y/16) then
-					if rnd(1)<0.5 then
-						tank.bm=make_baby(
-							7+flr(rnd(6))+flr(a.x/16)*16,
-							9+flr(rnd(2))+flr(a.y/16)*16,
-							a,b) and "Mutation!" or "br:bred"
-					else
-						tank.bm="br:fail"
-					end
-					return
-				end
-			end
-		end
+	for r=0,3 do
+		breed_room(r)
 	end
 end
 
@@ -173,7 +202,7 @@ function upd_shrimp()
 			end
 			if a.sj>0 and rnd(1)<0.18 then
 				a.sj-=1
-				a.dy-=a.sa<7 and 0.45 or 0.6
+				a.dy-=a.sa<6 and 0.45 or 0.6
 				sfx(2)
 			end
 			if a.st>0 then
@@ -188,13 +217,13 @@ function upd_shrimp()
 					a.so=a.sdx>0 and 1 or 0
 					a.st=15+flr(rnd(30))
 					if rnd(1)<0.12 then
-						a.dy-=a.sa<7 and 0.45 or 0.6
+						a.dy-=a.sa<6 and 0.45 or 0.6
 						a.sj=1+flr(rnd(4))
 						sfx(2)
 					end
 				end
 			end
-			a.dx+=a.sdx*(a.sa<7 and 0.03 or 0.04)
+			a.dx+=a.sdx*(a.sa<6 and 0.03 or 0.04)
 		end
 	end
 end

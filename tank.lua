@@ -91,7 +91,7 @@ end
 function adult_n()
 	local s=0
 	for a in all(ent) do
-		if a.sa!=nil and a.sa>=7 then s+=1 end
+		if a.sa!=nil and a.sa>=6 then s+=1 end
 	end
 	return s
 end
@@ -126,31 +126,41 @@ function max_pur()
 	return p
 end
 
+function cull_ok()
+	return max_pur()>=2
+end
+
 function tank_step()
+	local b=0
+	for a in all(ent) do
+		if a.mb!=nil then
+			b+=1
+		end
+	end
+	tank.stab=min(100,tank.stab+15+b*2.5)
+end
+
+function chem_step()
 	local f=0
 	local s=0
 	local n=0
 	local m=0
-	local b=0
 	for a in all(ent) do
 		if a.mp!=nil then
 			m+=1
-		elseif a.mb!=nil then
-			b+=1
 		elseif a.np!=nil then
 			n+=1
 		elseif a.sa!=nil then
-			if a.sa<7 then
+			if a.sa<6 then
 				f+=1
 			else
 				s+=1
 			end
 		end
 	end
-	tank.stab=min(100,tank.stab+30+b*5)
 	tank.amm=max(0,tank.amm+(f-n+s*2)*(0.025-m*0.005))
 	tank.kh=max(0,tank.kh-0.1)
-	tank.gh=max(0,tank.gh+b*0.05-n*0.05)
+	tank.gh=max(0,tank.gh-n*0.05)
 	tank.tds+=10
 end
 
@@ -168,7 +178,8 @@ function upd_tank()
 		shrimp_day()
 		breed_day()
 	end
-	if tank.t%750==0 then tank_step() end
+	if tank.t%375==0 then tank_step() end
+	if tank.t%750==0 then chem_step() end
 	chk_go()
 	tank.ct+=1
 	if tank.ct>=120 then

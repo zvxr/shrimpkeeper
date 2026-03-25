@@ -32,6 +32,10 @@ function on_disc(a)
 	return disc_ok() and touch_tile(a,33,11)
 end
 
+function on_cull(a)
+	return cull_ok() and touch_tile(a,30,10)
+end
+
 function try_door(a)
 	if on_door(a) and btnp(2) then
 		tank.sm=1
@@ -45,6 +49,9 @@ function try_door(a)
 	elseif on_disc(a) and btnp(2) then
 		tank.sm=4
 		tank.ss=1
+	elseif on_cull(a) and btnp(2) then
+		tank.sm=5
+		tank.ss=cull_n(1)>0 and 1 or 2
 	end
 end
 
