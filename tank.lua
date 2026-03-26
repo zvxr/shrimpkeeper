@@ -85,7 +85,7 @@ function tank_red()
 end
 
 function chk_go()
-	if tank.stab<=0 or tank.amm>=3 or tank.rx>=3 then
+	if tank.stab<=0 or tank.amm>=3 or tank.rx>=3 or adult_n()+fry_n()<1 then
 		tank.go=true
 	end
 end
@@ -99,7 +99,7 @@ end
 function adult_n()
 	local s=0
 	for a in all(ent) do
-		if a.sa!=nil and a.sa>=6 then s+=1 end
+		if a.sa!=nil and a.sa>=5 then s+=1 end
 	end
 	return s
 end
@@ -107,7 +107,7 @@ end
 function fry_n()
 	local s=0
 	for a in all(ent) do
-		if a.sa!=nil and a.sa<6 then s+=1 end
+		if a.sa!=nil and a.sa<5 then s+=1 end
 	end
 	return s
 end
@@ -161,23 +161,24 @@ function chem_step()
 	local s=0
 	local n=0
 	local m=0
+	local o=max(0,tank.day-17)
 	for a in all(ent) do
 		if a.mp!=nil then
 			m+=1
 		elseif a.np!=nil then
 			n+=1
 		elseif a.sa!=nil then
-			if a.sa<6 then
+			if a.sa<5 then
 				f+=1
 			else
 				s+=1
 			end
 		end
 	end
-	tank.amm=max(0,tank.amm+(f-n+s*2)*(0.025-m*0.005))
+	tank.amm=max(0,tank.amm+(f-n+s*2)*(0.025-m*0.005)+o*0.05)
 	tank.kh=max(0,tank.kh-0.1)
 	tank.gh=max(0,tank.gh-n*0.05)
-	tank.tds+=10
+	tank.tds+=10+o*2.5
 end
 
 function upd_tank()
@@ -194,10 +195,15 @@ function upd_tank()
 		end
 		shrimp_day()
 		local m=breed_day()
-		if m then
-			set_msg("Mutation!",11)
-		elseif d==10 then
+		if d%10==0 then
+			bloom_day(d)
+			set_msg("Algae bloom!",3)
+		elseif m then
+			set_msg(m,11)
+		elseif d==12 or d==19 then
 			set_msg("Shop opened!",13)
+		elseif d>=18 then
+			set_msg("Old Tank Syndrome",5)
 		else
 			set_msg("New day",5)
 		end
@@ -223,6 +229,21 @@ function use_item()
 			a.sp=0.7+rnd(0.5)
 			a.sr=rnd(1)<0.5
 			a.sd=rnd(1)<0.1
+		elseif tank.i1==5 then
+			a=make_shrimp(pl.x+1,pl.y)
+			a.sp=0.7+rnd(0.5)
+			a.sr=rnd(1)<0.5
+			a.sd=rnd(1)<0.1
+		elseif tank.i1==6 then
+			a=make_shrimp(pl.x+1,pl.y)
+			a.sp=2
+			a.sr=rnd(1)<0.5
+			a.sd=rnd(1)<0.1
+		elseif tank.i1==7 then
+			a=make_shrimp(pl.x+1,pl.y)
+			a.sp=1.5
+			a.sr=rnd(1)<0.5
+			a.sd=true
 		elseif tank.i1==3 then
 			make_micro(pl.x+1,pl.y)
 		else
@@ -267,9 +288,8 @@ end
 function draw_tank_hud()
 	print("ph:"..fmt1(tank.ph),8,3,st_col(st_ph(tank.ph)))
 	print("amm:"..fmt1(tank.amm),36,3,st_col(st_amm(tank.amm)))
-	print("$"..tank.money,72,15,10)
-	print("Fry"..fry_n(),96,3,3)
-	print("Adu"..adult_n(),96,9,3)
+	print("$"..tank.money,80,15,10)
+	print("Adu:"..adult_n(),102,3,3)
 	print("day:"..tank.day,102,15,11)
 	print("kh:"..fmt1(tank.kh),8,9,st_col(st_kh(tank.kh)))
 	print("gh:"..fmt1(tank.gh),36,9,st_col(st_gh(tank.gh)))
@@ -279,7 +299,7 @@ function draw_tank_hud()
 	if tank.rx>0 then print(sub("xxx",1,tank.rx),94,15,8) end
 	if tank.i1==1 then
 		spr(48,16,16)
-	elseif tank.i1==2 then
+	elseif tank.i1==2 or tank.i1==5 or tank.i1==6 or tank.i1==7 then
 		spr(52,16,16)
 	elseif tank.i1==3 then
 		spr(16,16,16)

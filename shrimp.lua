@@ -1,5 +1,5 @@
 function shrimp_size(a)
-	if a.sa<6 then
+	if a.sa<5 then
 		a.k=53
 		a.fs=1
 		a.frames=4
@@ -23,8 +23,8 @@ function make_shrimp(x,y)
 	a.sa=8
 	a.sp=0.5
 	a.sb=rnd(1)<0.5
-	a.sr=rnd(1)<0.3
-	a.sd=rnd(1)<0.1
+	a.sr=rnd(1)<0.4
+	a.sd=rnd(1)<0.2
 	a.st=0
 	a.sdx=0
 	a.so=0
@@ -39,7 +39,7 @@ end
 
 function near_pet(a)
 	for b in all(ent) do
-		if (b.sa!=nil or b.np!=nil) and
+		if (b.sa!=nil or b.np!=nil or b.ap!=nil) and
 			abs(a.x-b.x)<1.5 and
 			abs(a.y-b.y)<1.5 then
 			return b
@@ -70,7 +70,7 @@ function try_pet(a)
 			if btn(3) and b then
 				hold_pet(b)
 			else
-				if b then
+				if b and b.ap==nil then
 					sd_a=b
 				else
 					use_item()
@@ -99,7 +99,7 @@ end
 
 function make_fry(x,y)
 	a=make_shrimp(x,y)
-	a.sa=3+flr(rnd(4))
+	a.sa=2+flr(rnd(2))
 	shrimp_size(a)
 	return a
 end
@@ -120,7 +120,10 @@ function make_baby(x,y,a,b)
 	if rnd(20)<1 then c.sr=true m=true end
 	if rnd(100)<1 then c.sd=true m=true end
 	shrimp_size(c)
-	return m
+	if c.sp>=2 then
+		return c.sb and "BloodyMary!" or "GreenJade!"
+	end
+	if m then return "Mutation!" end
 end
 
 function breed_room(r)
@@ -128,7 +131,7 @@ function breed_room(r)
 	local nr=0
 	local ny=0
 	for a in all(ent) do
-		if a.sa and a.sa>=6 and flr(a.x/16)==r then
+		if a.sa and a.sa>=5 and flr(a.x/16)==r then
 			if a.sb then
 				nr+=1
 			else
@@ -146,7 +149,7 @@ function breed_room(r)
 	local a2=nil
 	local n=0
 	for a in all(ent) do
-		if a.sa and a.sa>=6 and a.sb==c and flr(a.x/16)==r then
+		if a.sa and a.sa>=5 and a.sb==c and flr(a.x/16)==r then
 			n+=1
 			if n==1 then
 				a1=a
@@ -175,7 +178,12 @@ function breed_day()
 	end
 	local m=false
 	for r=0,3 do
-		if breed_room(r) then m=true end
+		local e=breed_room(r)
+		if e=="Bloody M Born!" or e=="Jade Born!" then
+			m=e
+		elseif e and not m then
+			m=e
+		end
 	end
 	return m
 end
@@ -202,7 +210,7 @@ function upd_shrimp()
 			end
 			if a.sj>0 and rnd(1)<0.18 then
 				a.sj-=1
-				a.dy-=a.sa<6 and 0.45 or 0.6
+				a.dy-=a.sa<5 and 0.45 or 0.6
 				sfx(2)
 			end
 			if a.st>0 then
@@ -217,13 +225,13 @@ function upd_shrimp()
 					a.so=a.sdx>0 and 1 or 0
 					a.st=15+flr(rnd(30))
 					if rnd(1)<0.12 then
-						a.dy-=a.sa<6 and 0.45 or 0.6
+						a.dy-=a.sa<5 and 0.45 or 0.6
 						a.sj=1+flr(rnd(4))
 						sfx(2)
 					end
 				end
 			end
-			a.dx+=a.sdx*(a.sa<6 and 0.03 or 0.04)
+			a.dx+=a.sdx*(a.sa<5 and 0.03 or 0.04)
 		end
 	end
 end
@@ -284,9 +292,14 @@ function draw_held_pet()
 		pal(7,ha.sr and ha.sp>0.7 and 7 or c)
 		pal(14,ha.sd and ha.sp>0.9 and sbc(ha,10,9) or 14)
 		spr(52,room_x*128+8,16)
+		print(fmt1(ha.sp),room_x*128+16,16,c)
 	else
-		pal(5,snail_shell(ha))
-		spr(48,room_x*128+8,16)
+		if ha.np!=nil then
+			pal(5,snail_shell(ha))
+			spr(48,room_x*128+8,16)
+		else
+			spr(26,room_x*128+8,16)
+		end
 	end
 	pal()
 end

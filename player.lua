@@ -25,7 +25,7 @@ function on_plant(a)
 end
 
 function on_shrimp_shop(a)
-	return tank.day>=10 and touch_tile(a,45,5)
+	return tank.day>=12 and touch_tile(a,45,5)
 end
 
 function on_disc(a)
@@ -34,6 +34,10 @@ end
 
 function on_cull(a)
 	return cull_ok() and touch_tile(a,30,10)
+end
+
+function on_xf(a)
+	return tank.day>=19 and touch_tile(a,53,4)
 end
 
 function try_door(a)
@@ -52,6 +56,9 @@ function try_door(a)
 	elseif on_cull(a) and btnp(2) then
 		tank.sm=5
 		tank.ss=cull_n(1)>0 and 1 or 2
+	elseif on_xf(a) and btnp(2) then
+		tank.sm=6
+		tank.ss=1
 	end
 end
 

@@ -2,6 +2,8 @@
 
 ## Coordinates
 
+- high-level player-facing notes live in `INSTRUCTIONS.md`
+
 - `x`, `y`: world position in map tiles
 - screen size: `16x16` tiles
 - used world span: `0,0` to `63,15`
@@ -40,8 +42,8 @@ Created by `make_ent(k,x,y)`.
 
 ### Age
 
-- fry: `0..5`
-- adult: `6+`
+- fry: `0..4`
+- adult: `5+`
 - on each new day, shrimp age by `1`
 - once a shrimp is `30+` days old, each new day has a `50%` chance it dies and disappears
 - fry use sprite strip `53..56` as `1x1`
@@ -54,15 +56,15 @@ Created by `make_ent(k,x,y)`.
 - `sa=8`
 - `sp=0.5`
 - `sb`: 50/50 random
-- `sr`: 30/70 random
-- `sd`: 10/90 random
+- `sr`: 40/60 random
+- `sd`: 20/80 random
 
 ### Initial Spawn
 
 - initial world no longer places one fixed adult shrimp
 - it now creates `4` fry shrimp
 - initial fry colors are `2` red-line and `2` yellow-line
-- initial fry age is randomized in `3..6`
+- initial fry age is randomized in `2..3`
 - fry spawn in the coin box on horizontal screens `2` and `3`
 - spawn band: `x=7..12 + 16*(1 or 2)`, `y=9..10`
 
@@ -100,7 +102,10 @@ Created by `make_ent(k,x,y)`.
   - `1/10`: `sp += 1`
   - `1/20`: `sr=true`
   - `1/100`: `sd=true`
-  - if any mutation happens, the day message shows `Mutation!`
+  - if a baby is born with `sp>=2`, the day message shows:
+    - `BloodyMary!` for red-line shrimp
+    - `GreenJade!` for yellow-line shrimp
+  - otherwise, if any mutation happens, the day message shows `Mutation!`
 
 ### Palette Mapping
 
@@ -160,6 +165,21 @@ Created by `make_ent(k,x,y)`.
 - snails wander slowly and mostly idle
 - snails reduce `gh` by `0.05` each water cycle
 
+## Algae
+
+- algae logic lives in `algae.lua`
+- use sprite `26`
+- `ap`: algae marker
+- algae are solid and can be picked up with the same held-object flow as shrimp/snails
+- algae do not move on their own
+- if a snail gets close enough to algae, the algae disappears
+- every `10` days, an algae bloom happens on days `10`, `20`, `30`, etc.
+- bloom adds `4 + day/10` algae blocks to each of the first `4` screens
+- bloom placement avoids:
+  - solid map tiles
+  - door/shop tiles
+  - tiles within `2` blocks of the player
+
 ## Microorganisms
 
 - microorganism logic lives in `micro.lua`
@@ -193,7 +213,7 @@ Created by `make_ent(k,x,y)`.
 - `msg`: short timed status-bar message
 - `msgc`: message color
 - `mt`: message timer
-- `sm`: shop mode (`0` off, `1` normal, `2` plant, `3` shrimp sell, `4` discount, `5` cull); compare with `>0`
+- `sm`: shop mode (`0` off, `1` normal, `2` plant, `3` shrimp sell, `4` discount, `5` cull, `6` special); compare with `>0`
 - `ss`: current shop selection (`1..5`)
 - `ps`: whether the plant shop is unlocked
 - `rx`: red-condition warning count
@@ -213,10 +233,13 @@ Created by `make_ent(k,x,y)`.
   - unhealthy: yellow
   - dangerous: red
 - `ph`, `amm`, `kh`, and `gh` display with one decimal digit
-- HUD shows `Fry` and `Adu` counts above `day` in dark green
+- HUD shows `Adu:` count above `day` in dark green
 - day messages last about `5` seconds and are chosen on new day with this priority:
+  - `Algae bloom!` in dark green on bloom days
+  - `BloodyMary!` or `GreenJade!` in green if a shrimp is born with `sp>=2`
   - `Mutation!` in green if a breeding mutation happened
-  - `Shop opened!` in pink on day `10`
+  - `Shop opened!` in pink on day `12` and day `19`
+  - `Old Tank Syndrome` in dark grey on day `18+`
   - `New day` in dark grey otherwise
 
 ## Shops
@@ -264,6 +287,11 @@ Created by `make_ent(k,x,y)`.
   - `kh -= 0.1`, floored at `0`
   - `gh -= snails * 0.05`, floored at `0`
   - `tds += 10`
+- old tank syndrome starts on day `18`
+  - because chemistry runs twice per day, each chemistry tick adds:
+  - `amm += (day-17) * 0.05`
+  - `tds += (day-17) * 2.5`
+  - so by day `20`, old tank syndrome adds `+0.3 amm` and `+15 tds` per full day
 
 ### Game Over
 
@@ -274,6 +302,7 @@ Created by `make_ent(k,x,y)`.
   - `rx >= 3`
   - `stab <= 0`
   - `amm >= 3.0`
+  - there are no shrimp or fry left in the tank
 
 ## Coins
 
@@ -308,6 +337,7 @@ Created by `make_ent(k,x,y)`.
 
 - only one creature can be held at a time
 - held shrimp draw with sprite `52`
+- held shrimp also show `sp` with one decimal in the shrimp's main body color
 - held snails draw with sprite `48`
 - held icon is drawn at tile `(1,2)` on the current screen
 - dropping the held creature places it next to the player
@@ -318,16 +348,20 @@ Created by `make_ent(k,x,y)`.
 - once `8` adult shrimp exist, the plant shop unlocks permanently
 - plant shop graphic `12` is drawn at `(25,4)`
 - pressing `up` on the plant shop opens the plant menu
-- on day `10+`, the shrimp shop graphic `13` is drawn at `(45,5)`
+- on day `12+`, the shrimp shop graphic `13` is drawn at `(45,5)`
 - pressing `up` on the shrimp shop opens the shrimp sell prompt
 - if there is a snail in each of the four rooms, the discount shop graphic `14` is drawn at `(33,11)`
 - pressing `up` on the discount shop opens the discount menu
 - if there is an adult shrimp with `purity >= 2.0`, the culling shop graphic `15` is drawn at `(30,10)`
 - pressing `up` on the culling shop opens the cull menu
+- on day `19+`, the special shop graphic `31` is drawn at `(53,4)`
+- pressing `up` on the special shop opens the special shrimp menu
 - purchases only work if `money>=cost`
 - creature purchases use slot `(2,2)`
   - `snail` cost `20`, icon `48`
   - `fancy` cost `30`, icon `52`
+  - `metallic` cost `40`, icon `52`
+  - `devil eyes` cost `30`, icon `52`
   - `bacter ae` cost `24`, icon `16`
   - `moss ball` cost `12`, icon `20`
 - item purchases use slot `(3,2)`
@@ -375,7 +409,7 @@ Created by `make_ent(k,x,y)`.
   - only shrimp with `purity < 0.5` are eligible
   - if no eligible shrimp exist, it shows `no naturals`
 - if no held shrimp is available, the shrimp shop shows `No shrimp to sell`
-- shrimp with `sp < 1` cannot be sold
+- shrimp with `sp <= 0.6` cannot be sold
 - shrimp sell value is `(flr(sp*5) + 2 if sr + 5 if sd) * 2`
 - in the shrimp shop:
   - `X`: accept sale
@@ -384,6 +418,14 @@ Created by `make_ent(k,x,y)`.
   - `sp=0.7..1.2`
   - `sr` 50% chance
   - `sd` 10% chance
+- using `metallic` spawns an adult shrimp with:
+  - `sp=2.0`
+  - `sr` 50% chance
+  - `sd` 10% chance
+- using `devil eyes` spawns an adult shrimp with:
+  - `sp=1.5`
+  - `sr` 50% chance
+  - `sd` always true
 
 ## Doors
 
