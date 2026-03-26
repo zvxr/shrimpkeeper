@@ -10,7 +10,9 @@ function init_tank()
 		day=1,
 		t=0,
 		ct=0,
-		bm="",
+		msg="",
+		msgc=5,
+		mt=0,
 		sm=0,
 		ss=1,
 		ps=false,
@@ -88,10 +90,24 @@ function chk_go()
 	end
 end
 
+function set_msg(s,c)
+	tank.msg=s
+	tank.msgc=c
+	tank.mt=150
+end
+
 function adult_n()
 	local s=0
 	for a in all(ent) do
 		if a.sa!=nil and a.sa>=6 then s+=1 end
+	end
+	return s
+end
+
+function fry_n()
+	local s=0
+	for a in all(ent) do
+		if a.sa!=nil and a.sa<6 then s+=1 end
 	end
 	return s
 end
@@ -166,6 +182,7 @@ end
 
 function upd_tank()
 	tank.t+=1
+	if tank.mt>0 then tank.mt-=1 end
 	if not tank.ps and adult_n()>=8 then tank.ps=true end
 	local d=1+flr(tank.t/1500)
 	if d>tank.day then
@@ -176,7 +193,14 @@ function upd_tank()
 			tank.rx-=1
 		end
 		shrimp_day()
-		breed_day()
+		local m=breed_day()
+		if m then
+			set_msg("Mutation!",11)
+		elseif d==10 then
+			set_msg("Shop opened!",13)
+		else
+			set_msg("New day",5)
+		end
 	end
 	if tank.t%375==0 then tank_step() end
 	if tank.t%750==0 then chem_step() end
@@ -244,13 +268,15 @@ function draw_tank_hud()
 	print("ph:"..fmt1(tank.ph),8,3,st_col(st_ph(tank.ph)))
 	print("amm:"..fmt1(tank.amm),36,3,st_col(st_amm(tank.amm)))
 	print("$"..tank.money,72,15,10)
+	print("Fry"..fry_n(),96,3,3)
+	print("Adu"..adult_n(),96,9,3)
 	print("day:"..tank.day,102,15,11)
 	print("kh:"..fmt1(tank.kh),8,9,st_col(st_kh(tank.kh)))
 	print("gh:"..fmt1(tank.gh),36,9,st_col(st_gh(tank.gh)))
-	print(tank.bm,36,15,7)
+	if tank.mt>0 then print(tank.msg,36,15,tank.msgc) end
 	print("tds:"..tank.tds,72,3,st_col(st_tds(tank.tds)))
 	print("stab:"..tank.stab,72,9,st_col(st_stab(tank.stab)))
-	if tank.rx>0 then print(sub("xxx",1,tank.rx),102,9,8) end
+	if tank.rx>0 then print(sub("xxx",1,tank.rx),94,15,8) end
 	if tank.i1==1 then
 		spr(48,16,16)
 	elseif tank.i1==2 then

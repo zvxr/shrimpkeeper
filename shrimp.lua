@@ -163,21 +163,21 @@ function breed_room(r)
 	end
 	if not a2 then return end
 	if rnd(1)<0.5 then
-		tank.bm=make_baby(7+flr(rnd(6))+r*16,9+flr(rnd(2)),a1,a2) and "Mutation!" or "br:bred"
-	else
-		tank.bm="br:fail"
+		local m=make_baby(7+flr(rnd(6))+r*16,9+flr(rnd(2)),a1,a2)
+		sfx(4)
+		return m
 	end
 end
 
 function breed_day()
-	tank.bm="br:none"
 	if not tank_ok() then
-		tank.bm="br:bad"
 		return
 	end
+	local m=false
 	for r=0,3 do
-		breed_room(r)
+		if breed_room(r) then m=true end
 	end
+	return m
 end
 
 function upd_shrimp()

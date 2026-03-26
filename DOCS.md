@@ -90,6 +90,7 @@ Created by `make_ent(k,x,y)`.
 - each of the `4` rooms is checked separately
 - within an eligible room, a random same-line adult pair is used
 - success creates one fry with `sa=1`
+- successful breeding plays `sfx(4)`
 - baby values:
   - `sp`: random from `(lowest-0.2)` to `(highest+0.2)`, then `+ tank.kh/4`
   - `sb`: shared parent base color
@@ -99,7 +100,7 @@ Created by `make_ent(k,x,y)`.
   - `1/10`: `sp += 1`
   - `1/20`: `sr=true`
   - `1/100`: `sd=true`
-  - if any mutation happens, `bm` shows `Mutation!`
+  - if any mutation happens, the day message shows `Mutation!`
 
 ### Palette Mapping
 
@@ -189,7 +190,9 @@ Created by `make_ent(k,x,y)`.
 - `day`: current day number
 - `t`: tank update tick counter
 - `ct`: coin spawn timer
-- `bm`: short breeding debug text, including `Mutation!`
+- `msg`: short timed status-bar message
+- `msgc`: message color
+- `mt`: message timer
 - `sm`: shop mode (`0` off, `1` normal, `2` plant, `3` shrimp sell, `4` discount, `5` cull); compare with `>0`
 - `ss`: current shop selection (`1..5`)
 - `ps`: whether the plant shop is unlocked
@@ -210,6 +213,11 @@ Created by `make_ent(k,x,y)`.
   - unhealthy: yellow
   - dangerous: red
 - `ph`, `amm`, `kh`, and `gh` display with one decimal digit
+- HUD shows `Fry` and `Adu` counts above `day` in dark green
+- day messages last about `5` seconds and are chosen on new day with this priority:
+  - `Mutation!` in green if a breeding mutation happened
+  - `Shop opened!` in pink on day `10`
+  - `New day` in dark grey otherwise
 
 ## Shops
 
