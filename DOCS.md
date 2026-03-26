@@ -233,13 +233,13 @@ Created by `make_ent(k,x,y)`.
   - unhealthy: yellow
   - dangerous: red
 - `ph`, `amm`, `kh`, and `gh` display with one decimal digit
-- HUD shows `Adu:` count above `day` in dark green
+- HUD shows `Num:` count above `day` in dark green
 - day messages last about `5` seconds and are chosen on new day with this priority:
   - `Algae bloom!` in dark green on bloom days
   - `BloodyMary!` or `GreenJade!` in green if a shrimp is born with `sp>=2`
   - `Mutation!` in green if a breeding mutation happened
   - `Shop opened!` in pink on day `12` and day `19`
-  - `Old Tank Syndrome` in dark grey on day `18+`
+  - `Old tank` in dark grey on day `18+`
   - `New day` in dark grey otherwise
 
 ## Shops
@@ -288,10 +288,12 @@ Created by `make_ent(k,x,y)`.
   - `gh -= snails * 0.05`, floored at `0`
   - `tds += 10`
 - old tank syndrome starts on day `18`
+  - because stability runs twice per day, each stability tick subtracts:
+  - `stab -= (day-17) * 2.5`, capped at `40`
   - because chemistry runs twice per day, each chemistry tick adds:
   - `amm += (day-17) * 0.05`
   - `tds += (day-17) * 2.5`
-  - so by day `20`, old tank syndrome adds `+0.3 amm` and `+15 tds` per full day
+  - so by day `20`, old tank syndrome adds `+0.3 amm`, `+15 tds`, and `-15 stab` per full day
 
 ### Game Over
 
@@ -303,6 +305,14 @@ Created by `make_ent(k,x,y)`.
   - `stab <= 0`
   - `amm >= 3.0`
   - there are no shrimp or fry left in the tank
+- game over screen also shows `score`, which is:
+  - `adult shrimp * 10`
+  - `max purity * 200`
+  - `average adult purity * 100`
+  - `snails * 20`
+  - `moss balls * 10`
+  - `days * 3`
+  - `algae * -2`
 
 ## Coins
 
@@ -337,7 +347,7 @@ Created by `make_ent(k,x,y)`.
 
 - only one creature can be held at a time
 - held shrimp draw with sprite `52`
-- held shrimp also show `sp` with one decimal in the shrimp's main body color
+- held shrimp show `*` under `gH` when they are sellable
 - held snails draw with sprite `48`
 - held icon is drawn at tile `(1,2)` on the current screen
 - dropping the held creature places it next to the player

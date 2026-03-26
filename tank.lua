@@ -142,18 +142,65 @@ function max_pur()
 	return p
 end
 
+function avg_pur()
+	local n=0
+	local p=0
+	for a in all(ent) do
+		if a.sa!=nil and a.sa>=5 then
+			n+=1
+			p+=a.sp
+		end
+	end
+	return n>0 and p/n or 0
+end
+
+function snail_n()
+	local n=0
+	for a in all(ent) do
+		if a.np!=nil then n+=1 end
+	end
+	return n
+end
+
+function moss_n()
+	local n=0
+	for a in all(ent) do
+		if a.mb!=nil then n+=1 end
+	end
+	return n
+end
+
+function algae_n()
+	local n=0
+	for a in all(ent) do
+		if a.ap!=nil then n+=1 end
+	end
+	return n
+end
+
+function score_n()
+	return adult_n()*10+
+		max_pur()*200+
+		avg_pur()*100+
+		snail_n()*20+
+		moss_n()*10+
+		tank.day*3-
+		algae_n()*2
+end
+
 function cull_ok()
 	return max_pur()>=2
 end
 
 function tank_step()
 	local b=0
+	local o=min(40,max(0,tank.day-17)*2.5)
 	for a in all(ent) do
 		if a.mb!=nil then
 			b+=1
 		end
 	end
-	tank.stab=min(100,tank.stab+15+b*2.5)
+	tank.stab=min(100,tank.stab+15+b*2.5-o)
 end
 
 function chem_step()
@@ -203,7 +250,7 @@ function upd_tank()
 		elseif d==12 or d==19 then
 			set_msg("Shop opened!",13)
 		elseif d>=18 then
-			set_msg("Old Tank Syndrome",5)
+			set_msg("Old tank",5)
 		else
 			set_msg("New day",5)
 		end
@@ -289,7 +336,7 @@ function draw_tank_hud()
 	print("ph:"..fmt1(tank.ph),8,3,st_col(st_ph(tank.ph)))
 	print("amm:"..fmt1(tank.amm),36,3,st_col(st_amm(tank.amm)))
 	print("$"..tank.money,80,15,10)
-	print("Adu:"..adult_n(),102,3,3)
+	print("Num:"..adult_n(),102,3,3)
 	print("day:"..tank.day,102,15,11)
 	print("kh:"..fmt1(tank.kh),8,9,st_col(st_kh(tank.kh)))
 	print("gh:"..fmt1(tank.gh),36,9,st_col(st_gh(tank.gh)))
@@ -310,10 +357,11 @@ function draw_tank_hud()
 end
 
 function draw_go()
-	rectfill(20,36,108,84,0)
-	rect(20,36,108,84,8)
+	rectfill(20,36,108,92,0)
+	rect(20,36,108,92,8)
 	print("game over",40,42,8)
 	print("days:"..tank.day,28,54,7)
 	print("adults:"..adult_n(),28,64,7)
 	print("max pur:"..fmt1(max_pur()),28,74,7)
+	print("score:"..flr(score_n()),28,84,7)
 end

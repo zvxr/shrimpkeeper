@@ -143,6 +143,7 @@ During play, the tank changes on its own.
 - stability recovers on a faster cycle
 - ammonia, `kH`, `gH`, and `TDS` change on a chemistry cycle
 - old tank syndrome makes ammonia and `TDS` rise faster after day `18`
+- old tank syndrome also reduces stability more each day after it begins
 
 ## Shops
 
