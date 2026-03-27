@@ -62,7 +62,6 @@ Created by `make_ent(k,x,y)`.
 - fry: `0..4`
 - adult: `5+`
 - on each new day, shrimp age by `1`
-- once a shrimp is `30+` days old, each new day has a `50%` chance it dies and disappears
 - fry use sprite strip `53..56` as `1x1`
 - adults use sprite strip starting at `37` with `+2` frame steps as `2x1`
 - fry hitbox is currently smaller than the full tile
@@ -180,7 +179,6 @@ Created by `make_ent(k,x,y)`.
   - else `5`
 - snails do not age or breed
 - snails wander slowly and mostly idle
-- snails reduce `gh` by `0.05` each water cycle
 
 ## Algae
 
@@ -225,7 +223,7 @@ Created by `make_ent(k,x,y)`.
 - `tds`: total dissolved solids
 - `money`: collected money
 - `day`: current day number
-- `t`: tank update tick counter
+- `t`: in-day tick counter, rolling from `0..1499`
 - `ct`: coin spawn timer
 - `msg`: short timed status-bar message
 - `msgc`: message color
@@ -240,6 +238,7 @@ Created by `make_ent(k,x,y)`.
 - `i1p`: stored snail purity for creature slot
 - `i1b`: stored snail base color for creature slot
 - one day is currently `1500` updates
+- the day clock now rolls every day instead of growing forever, to avoid PICO-8 number overflow
 - tank parameter drift is currently applied every `750` updates
 - tank parameter status uses:
   - `0`: healthy
@@ -300,9 +299,8 @@ Created by `make_ent(k,x,y)`.
 - every `375` updates:
   - `stab += 15 + moss_balls*2.5`, capped at `100`
 - every `750` updates:
-  - `amm += (fry - snails + adult_shrimp*2) * (0.025 - microorganisms*0.005)`, floored at `0`
+  - `amm += (fry + adult_shrimp*2) * (0.025 - microorganisms*0.005)`, floored at `0`
   - `kh -= 0.1`, floored at `0`
-  - `gh -= snails * 0.05`, floored at `0`
   - `tds += 10`
 - old tank syndrome starts on day `18`
   - because stability runs twice per day, each stability tick subtracts:
@@ -385,7 +383,7 @@ Created by `make_ent(k,x,y)`.
 - pressing `up` on the special shop opens the special shrimp menu
 - purchases only work if `money>=cost`
 - creature purchases use slot `(2,2)`
-  - `snail` cost `20`, icon `48`
+  - `snail` cost `16`, icon `48`
   - `fancy` cost `30`, icon `52`
   - `metallic` cost `40`, icon `52`
   - `devil eyes` cost `30`, icon `52`
@@ -411,7 +409,7 @@ Created by `make_ent(k,x,y)`.
   - `amm -= 2.0`, floored at `0`
   - `kh -= 2`
   - `gh -= 2`
-  - `tds -= 80`
+  - `tds -= 120`
 - `kh`, `gh`, and `tds` are floored at `0`
 - using `mineral kh+`:
   - `stab -= 20`
@@ -427,7 +425,7 @@ Created by `make_ent(k,x,y)`.
 - using `bacter ae` places a microorganism next to the player
 - using `moss ball` places a moss ball next to the player
 - discount shop sells:
-  - `water change` cost `4`
+  - `water change` cost `3`
   - `moss ball` cost `10`
   - `fancy` cost `20`
 - culling shop sells:
@@ -436,7 +434,7 @@ Created by `make_ent(k,x,y)`.
   - only shrimp with `purity < 0.5` are eligible
   - if no eligible shrimp exist, it shows `no naturals`
 - if no held shrimp is available, the shrimp shop shows `No shrimp to sell`
-- shrimp with `sp <= 0.6` cannot be sold
+- shrimp with `sp < 0.5` cannot be sold
 - shrimp sell value is `(flr(sp*5) + 2 if sr + 5 if sd) * 2`
 - in the shrimp shop:
   - `X`: accept sale

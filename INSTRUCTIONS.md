@@ -212,8 +212,6 @@ There are several shops in the tank.
 ### Snails
 
 - snails wander slowly
-- they help offset some ammonia
-- they also reduce `gH` over time
 - they can eat algae
 
 ### Microorganisms

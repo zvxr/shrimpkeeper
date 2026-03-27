@@ -210,14 +210,11 @@ end
 function chem_step()
 	local f=0
 	local s=0
-	local n=0
 	local m=0
 	local o=max(0,tank.day-17)
 	for a in all(ent) do
 		if a.mp!=nil then
 			m+=1
-		elseif a.np!=nil then
-			n+=1
 		elseif a.sa!=nil then
 			if a.sa<5 then
 				f+=1
@@ -226,9 +223,8 @@ function chem_step()
 			end
 		end
 	end
-	tank.amm=max(0,tank.amm+(f-n+s*2)*(0.025-m*0.005)+o*0.05)
+	tank.amm=max(0,tank.amm+(f+s*2)*(0.025-m*0.005)+o*0.05)
 	tank.kh=max(0,tank.kh-0.1)
-	tank.gh=max(0,tank.gh-n*0.05)
 	tank.tds+=10+o*2.5
 end
 
@@ -236,9 +232,10 @@ function upd_tank()
 	tank.t+=1
 	if tank.mt>0 then tank.mt-=1 end
 	if not tank.ps and adult_n()>=8 then tank.ps=true end
-	local d=1+flr(tank.t/1500)
-	if d>tank.day then
-		tank.day=d
+	if tank.t>=1500 then
+		tank.t=0
+		tank.day+=1
+		local d=tank.day
 		if tank_red() then
 			tank.rx+=1
 		elseif tank.rx>0 then
@@ -320,7 +317,7 @@ function use_item()
 			tank.amm=max(0,tank.amm-2)
 			tank.kh=max(0,tank.kh-2)
 			tank.gh=max(0,tank.gh-2)
-			tank.tds=max(0,tank.tds-80)
+			tank.tds=max(0,tank.tds-120)
 		elseif tank.i2==50 then
 			tank.stab-=20
 			tank.kh+=3

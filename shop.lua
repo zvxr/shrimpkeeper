@@ -3,7 +3,7 @@ function shop_cost()
 		return tank.ss==1 and 10 or 8
 	end
 	if tank.sm==4 then
-		return tank.ss==1 and 4 or tank.ss==2 and 10 or 20
+		return tank.ss==1 and 3 or tank.ss==2 and 10 or 20
 	end
 	if tank.sm==6 then
 		return tank.ss==1 and 30 or tank.ss==2 and 40 or 30
@@ -11,7 +11,7 @@ function shop_cost()
 	if tank.sm==2 then
 		return tank.ss==1 and 6 or tank.ss==2 and 24 or 12
 	end
-	return tank.ss==1 and 5 or tank.ss==2 and 10 or tank.ss==3 and 6 or tank.ss==4 and 20 or 30
+	return tank.ss==1 and 5 or tank.ss==2 and 10 or tank.ss==3 and 6 or tank.ss==4 and 16 or 30
 end
 
 function shrimp_price()
@@ -89,7 +89,7 @@ end
 
 function upd_shop()
 	if tank.sm==3 then
-		if btnp(5) and ha and ha.sa!=nil and ha.sp>0.6 then
+		if btnp(5) and ha and ha.sa!=nil and ha.sp>=0.5 then
 			tank.money+=shrimp_price()
 			ha=nil
 			tank.sm=0
@@ -136,13 +136,13 @@ function draw_shop()
 	rect(12,24,116,88,7)
 	if tank.sm==3 then
 		if ha and ha.sa!=nil then
-			if ha.sp>0.6 then
+			if ha.sp>=0.5 then
 				print("sell shrimp",36,40,7)
 				print("for $"..shrimp_price().."?",42,56,7)
 				print("x yes  z no",34,72,7)
 			else
 				print("cannot sell",34,48,7)
-				print("purity <= .6",28,58,7)
+				print("purity < .5",32,58,7)
 				print("z exit",46,72,7)
 			end
 		else
@@ -159,7 +159,7 @@ function draw_shop()
 		end
 	elseif tank.sm==4 then
 		print("discount",40,28,7)
-		draw_shop_row(1,38,"water",4)
+		draw_shop_row(1,38,"water",3)
 		draw_shop_row(2,48,"moss ball",10)
 		draw_shop_row(3,58,"fancy",20)
 	elseif tank.sm==6 then
@@ -177,7 +177,7 @@ function draw_shop()
 		draw_shop_row(1,38,"water",5)
 		draw_shop_row(2,48,"kh+",10)
 		draw_shop_row(3,58,"gh+",6)
-		draw_shop_row(4,68,"snail",20)
+		draw_shop_row(4,68,"snail",16)
 		draw_shop_row(5,78,"fancy",30)
 	end
 end

@@ -240,11 +240,7 @@ function shrimp_day()
 	for a in all(ent) do
 		if a.sa!=nil then
 			a.sa+=1
-			if a.sa>=30 and rnd(1)<0.5 then
-				del(ent,a)
-			else
-				shrimp_size(a)
-			end
+			shrimp_size(a)
 		end
 	end
 end
@@ -292,7 +288,7 @@ function draw_held_pet()
 		pal(7,ha.sr and ha.sp>0.7 and 7 or c)
 		pal(14,ha.sd and ha.sp>0.9 and sbc(ha,10,9) or 14)
 		spr(52,room_x*128+8,16)
-		if ha.sp>0.6 then print("*",36,15,c) end
+		if ha.sp>=0.5 then print("*",36,15,c) end
 	else
 		if ha.np!=nil then
 			pal(5,snail_shell(ha))
