@@ -86,6 +86,10 @@ end
 
 function chk_go()
 	if tank.stab<=0 or tank.amm>=3 or tank.rx>=3 or adult_n()+fry_n()<1 then
+		if not tank.go then
+			hs=max(hs,flr(score_n()))
+			dset(0,hs)
+		end
 		tank.go=true
 	end
 end
@@ -336,8 +340,8 @@ function draw_tank_hud()
 	print("ph:"..fmt1(tank.ph),8,3,st_col(st_ph(tank.ph)))
 	print("amm:"..fmt1(tank.amm),36,3,st_col(st_amm(tank.amm)))
 	print("$"..tank.money,80,15,10)
-	print("Num:"..adult_n(),102,3,3)
-	print("day:"..tank.day,102,15,11)
+	print("Ct:"..adult_n(),104,3,3)
+	print("day:"..tank.day,100,15,11)
 	print("kh:"..fmt1(tank.kh),8,9,st_col(st_kh(tank.kh)))
 	print("gh:"..fmt1(tank.gh),36,9,st_col(st_gh(tank.gh)))
 	if tank.mt>0 then print(tank.msg,36,15,tank.msgc) end

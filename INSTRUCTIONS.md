@@ -9,6 +9,16 @@ This is a shrimp tank management game.
 - Manage water parameters so the tank stays healthy.
 - Raise shrimp, breed them, and sell valuable shrimp.
 
+## Title Screen
+
+- The game starts on a title screen
+- `Start` begins the tank and creates the player and starting shrimp
+- `Help` opens two help pages
+- The title screen also shows the saved high score
+- Press `X` on the first help page to go to the second
+- Press `X` on the second help page to return to the title screen
+- Returning from help preselects `Start`
+
 ## Time
 
 - Time advances continuously during normal play.
@@ -25,6 +35,8 @@ This is a shrimp tank management game.
 - `Down + Z` near a shrimp, snail, or algae: pick it up if your hands are empty
 - `Z` while holding something: drop it next to the player
 - `Z` with no nearby creature and no held creature: use the current inventory item
+- On the title screen, use `Up` / `Down` to move between `Start` and `Help`
+- On the title and help pages, press `X` to confirm / continue
 
 ## Inventory
 

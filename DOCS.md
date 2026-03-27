@@ -7,6 +7,23 @@
 - `x`, `y`: world position in map tiles
 - screen size: `16x16` tiles
 - used world span: `0,0` to `63,15`
+- title/help screens use:
+  - title: `(0,16)`
+  - help 1: `(16,16)`
+  - help 2: `(32,16)`
+
+## Boot
+
+- `_init()` now starts on the title flow, not the tank world
+- title state fields:
+  - `gs=0`: title/help mode
+  - `gs=1`: normal game mode
+  - `ts`: title selection (`1` start, `2` help)
+  - `th`: title/help page (`0` title, `1` help 1, `2` help 2)
+- `init_world()` is only called after selecting `start`
+- while on title/help screens, `pl`, `tank`, and shrimp are not created yet
+- high score is persisted with `cartdata`
+- default high score is `100`
 
 ## Ent
 
@@ -233,7 +250,7 @@ Created by `make_ent(k,x,y)`.
   - unhealthy: yellow
   - dangerous: red
 - `ph`, `amm`, `kh`, and `gh` display with one decimal digit
-- HUD shows `Num:` count above `day` in dark green
+- HUD shows `Ct:` count above `day` in dark green
 - day messages last about `5` seconds and are chosen on new day with this priority:
   - `Algae bloom!` in dark green on bloom days
   - `BloodyMary!` or `GreenJade!` in green if a shrimp is born with `sp>=2`
