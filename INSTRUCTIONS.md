@@ -32,8 +32,8 @@ This is a shrimp tank management game.
 - `X`: swim upward
 - `Up`: enter a shop or interact with a shop tile
 - `Z` near a shrimp or snail: inspect it
-- `Down + Z` near a shrimp, snail, or algae: pick it up if your hands are empty
-- `Z` while holding something: drop it next to the player
+- `Down + Z` near a shrimp, snail, algae, or moss ball: pick it up if your hands are empty
+- `Z` while holding something: drop it on the side of the player based on the last left/right input
 - `Z` with no nearby creature and no held creature: use the current inventory item
 - On the title screen, use `Up` / `Down` to move between `Start` and `Help`
 - On the title and help pages, press `X` to confirm / continue

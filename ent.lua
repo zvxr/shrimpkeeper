@@ -37,6 +37,11 @@ function move_ent(a)
 	a.dx *= fric
 	a.dy *= fric
 
+	if a.mb!=nil and a.y<3.5 then
+		a.y=3.5
+		a.dy=0
+	end
+
 	a.frame += abs(a.dx) * 4
 	a.frame += abs(a.dy) * 4
 	a.frame %= a.frames

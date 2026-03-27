@@ -30,6 +30,7 @@ function init_world()
 	init_tank()
 	pl = make_ent(21,20,9)
 	pl.frames=4
+	pl.dir=1
 
 	add_fry(true)
 	add_fry(true)

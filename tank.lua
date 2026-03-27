@@ -174,6 +174,10 @@ function moss_n()
 	return n
 end
 
+function fancy_sp()
+	return 1+rnd(max(0,max_pur()-0.8))
+end
+
 function algae_n()
 	local n=0
 	for a in all(ent) do
@@ -188,7 +192,7 @@ function score_n()
 		avg_pur()*100+
 		snail_n()*20+
 		moss_n()*10+
-		tank.day*3-
+		tank.day*40-
 		algae_n()*2
 end
 
@@ -274,12 +278,12 @@ function use_item()
 			a.nb=tank.i1b
 		elseif tank.i1==2 then
 			a=make_shrimp(pl.x+1,pl.y)
-			a.sp=0.7+rnd(0.5)
+			a.sp=fancy_sp()
 			a.sr=rnd(1)<0.5
 			a.sd=rnd(1)<0.1
 		elseif tank.i1==5 then
 			a=make_shrimp(pl.x+1,pl.y)
-			a.sp=0.7+rnd(0.5)
+			a.sp=fancy_sp()
 			a.sr=rnd(1)<0.5
 			a.sd=rnd(1)<0.1
 		elseif tank.i1==6 then

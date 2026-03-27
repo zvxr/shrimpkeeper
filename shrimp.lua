@@ -5,7 +5,7 @@ function shrimp_size(a)
 		a.frames=4
 		a.sw=1
 		a.sh=1
-		a.w=0.3
+		a.w=0.25
 		a.h=0.3
 	else
 		a.k=37
@@ -13,7 +13,7 @@ function shrimp_size(a)
 		a.frames=4
 		a.sw=2
 		a.sh=1
-		a.w=0.7
+		a.w=0.5
 		a.h=0.3
 	end
 end
@@ -39,7 +39,7 @@ end
 
 function near_pet(a)
 	for b in all(ent) do
-		if (b.sa!=nil or b.np!=nil or b.ap!=nil) and
+		if (b.sa!=nil or b.np!=nil or b.ap!=nil or b.mb!=nil) and
 			abs(a.x-b.x)<1.5 and
 			abs(a.y-b.y)<1.5 then
 			return b
@@ -53,11 +53,18 @@ function hold_pet(a)
 end
 
 function drop_pet()
+	local d=pl.dir or 1
 	add(ent,ha)
-	ha.x=pl.x+1
+	ha.x=pl.x+d*1.5
 	ha.y=pl.y
 	ha.dx=0
 	ha.dy=0
+	if solid_map(ha,0,0) or solid_ent(ha,0,0) then
+		ha.x=pl.x+d*2
+	end
+	if solid_map(ha,0,0) or solid_ent(ha,0,0) then
+		ha.x=pl.x-d*1.5
+	end
 	ha=nil
 end
 
@@ -293,6 +300,8 @@ function draw_held_pet()
 		if ha.np!=nil then
 			pal(5,snail_shell(ha))
 			spr(48,room_x*128+8,16)
+		elseif ha.mb!=nil then
+			spr(20,room_x*128+8,16)
 		else
 			spr(26,room_x*128+8,16)
 		end

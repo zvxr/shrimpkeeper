@@ -212,6 +212,7 @@ Created by `make_ent(k,x,y)`.
 - they are solid and can be pushed by the player or shrimp
 - they do not move on their own
 - they animate while moving after being hit
+- they are clamped below the top `3` tile rows so they do not enter the HUD area
 
 ## Tank
 
@@ -326,7 +327,7 @@ Created by `make_ent(k,x,y)`.
   - `average adult purity * 100`
   - `snails * 20`
   - `moss balls * 10`
-  - `days * 3`
+  - `days * 40`
   - `algae * -2`
 
 ## Coins
@@ -341,6 +342,7 @@ Created by `make_ent(k,x,y)`.
 
 - `btn(0)`: left
 - `btn(1)`: right
+- last horizontal input is tracked for drop direction
 - `btn(2)`: up / interact with doors or shops
 - `btn(3)+btnp(4)`: hold a nearby shrimp or snail if none is held
 - `btn(4)`: inspect a nearby shrimp or snail, drop the held creature, or close dialog
@@ -364,8 +366,9 @@ Created by `make_ent(k,x,y)`.
 - held shrimp draw with sprite `52`
 - held shrimp show `*` under `gH` when they are sellable
 - held snails draw with sprite `48`
+- held moss balls draw with sprite `20`
 - held icon is drawn at tile `(1,2)` on the current screen
-- dropping the held creature places it next to the player
+- dropping the held creature places it to the left or right based on the last horizontal input
 
 ## Shop
 
@@ -440,7 +443,7 @@ Created by `make_ent(k,x,y)`.
   - `X`: accept sale
   - `Z`: exit
 - using `fancy` spawns an adult shrimp with:
-  - `sp=0.7..1.2`
+  - `sp=1.0..(0.2 + current max purity)`
   - `sr` 50% chance
   - `sd` 10% chance
 - using `metallic` spawns an adult shrimp with:
