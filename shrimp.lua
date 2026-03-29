@@ -5,16 +5,16 @@ function shrimp_size(a)
 		a.frames=4
 		a.sw=1
 		a.sh=1
-		a.w=0.25
-		a.h=0.3
+		a.w=0.2
+		a.h=0.25
 	else
 		a.k=37
 		a.fs=2
 		a.frames=4
 		a.sw=2
 		a.sh=1
-		a.w=0.5
-		a.h=0.3
+		a.w=0.42
+		a.h=0.25
 	end
 end
 
@@ -23,8 +23,8 @@ function make_shrimp(x,y)
 	a.sa=8
 	a.sp=0.5
 	a.sb=rnd(1)<0.5
-	a.sr=rnd(1)<0.4
-	a.sd=rnd(1)<0.2
+	a.sr=rnd(20)<sr_o
+	a.sd=rnd(20)<sd_o
 	a.st=0
 	a.sdx=0
 	a.so=0
@@ -52,19 +52,29 @@ function hold_pet(a)
 	del(ent,a)
 end
 
+function drop_ok(a)
+	local w=max(.05,a.w-.08)
+	local h=max(.05,a.h-.05)
+	return not (
+		solid(a.x-w,a.y-h) or
+		solid(a.x+w,a.y-h) or
+		solid(a.x-w,a.y+h) or
+		solid(a.x+w,a.y+h) or
+		solid_ent(a,0,0)
+	)
+end
+
 function drop_pet()
 	local d=pl.dir or 1
-	add(ent,ha)
-	ha.x=pl.x+d*1.5
+	ha.x=pl.x+d
 	ha.y=pl.y
 	ha.dx=0
 	ha.dy=0
-	if solid_map(ha,0,0) or solid_ent(ha,0,0) then
-		ha.x=pl.x+d*2
+	if ha.ap==nil and not drop_ok(ha) then
+		sfx(6)
+		return
 	end
-	if solid_map(ha,0,0) or solid_ent(ha,0,0) then
-		ha.x=pl.x-d*1.5
-	end
+	add(ent,ha)
 	ha=nil
 end
 
@@ -77,7 +87,7 @@ function try_pet(a)
 			if btn(3) and b then
 				hold_pet(b)
 			else
-				if b and b.ap==nil then
+				if b and (b.sa!=nil or b.np!=nil) then
 					sd_a=b
 				else
 					use_item()
@@ -117,16 +127,19 @@ function make_baby(x,y,a,b)
 	local hi=max(a.sp,b.sp)+0.2
 	local m=false
 	c.sa=1
-	c.sp=lo+rnd(hi-lo)+tank.kh/4
+	c.sp=lo+rnd(hi-lo)+tank.kh/4+tank.gp*.2
 	c.sb=a.sb
 	c.sr=a.sr and b.sr or
 		((a.sr or b.sr) and rnd(1)<0.5)
 	c.sd=a.sd and b.sd or
 		((a.sd or b.sd) and rnd(1)<0.5)
 	if rnd(10)<1 then c.sp+=1 m=true end
-	if rnd(20)<1 then c.sr=true m=true end
-	if rnd(100)<1 then c.sd=true m=true end
+	if rnd(20)<sr_o+tank.gr then c.sr=true m=true end
+	if rnd(20)<sd_o+tank.gd then c.sd=true m=true end
 	shrimp_size(c)
+	if c.sp>=5 then
+		return c.sb and "Calico!" or "Jelly!"
+	end
 	if c.sp>=2 then
 		return c.sb and "BloodyMary!" or "GreenJade!"
 	end
@@ -186,7 +199,7 @@ function breed_day()
 	local m=false
 	for r=0,3 do
 		local e=breed_room(r)
-		if e=="Bloody M Born!" or e=="Jade Born!" then
+		if e=="Calico!" or e=="Jelly!" or e=="BloodyMary!" or e=="GreenJade!" then
 			m=e
 		elseif e and not m then
 			m=e
@@ -257,6 +270,7 @@ function sbc(a,r,g)
 end
 
 function shrimp_body(a)
+	if a.sp>=5 then return sbc(a,15,12) end
 	if a.sp>=2 then return sbc(a,2,3) end
 	if a.sp>=0.7 then return sbc(a,8,11) end
 	if a.sp>=0.5 then return sbc(a,9,10) end
@@ -264,10 +278,16 @@ function shrimp_body(a)
 end
 
 function shrimp_back(a)
+	if a.sp>=5 then return sbc(a,15,12) end
 	if a.sp>=2 then return sbc(a,2,3) end
 	if a.sp>=0.9 then return sbc(a,8,11) end
 	if a.sp>=0.6 then return sbc(a,9,10) end
 	return sbc(a,4,5)
+end
+
+function shrimp_belly(a,c)
+	if a.sr and a.sp>=5 then return sbc(a,9,1) end
+	return a.sr and a.sp>0.7 and 7 or c
 end
 
 function draw_shrimp(a)
@@ -280,7 +300,7 @@ function draw_shrimp(a)
 	end
 	pal(5,c)
 	pal(6,shrimp_back(a))
-	pal(7,a.sr and a.sp>0.7 and 7 or c)
+	pal(7,shrimp_belly(a,c))
 	pal(14,a.sd and a.sp>0.9 and sbc(a,10,9) or 14)
 	spr(a.k + f*a.fs, sx, sy, a.sw, a.sh, a.so==1)
 	pal()
@@ -292,14 +312,14 @@ function draw_held_pet()
 		local c=shrimp_body(ha)
 		pal(5,c)
 		pal(6,shrimp_back(ha))
-		pal(7,ha.sr and ha.sp>0.7 and 7 or c)
+		pal(7,shrimp_belly(ha,c))
 		pal(14,ha.sd and ha.sp>0.9 and sbc(ha,10,9) or 14)
 		spr(52,room_x*128+8,16)
 		if ha.sp>=0.5 then print("*",36,15,c) end
 	else
 		if ha.np!=nil then
 			pal(5,snail_shell(ha))
-			spr(48,room_x*128+8,16)
+			spr(48,room_x*128+8,8)
 		elseif ha.mb!=nil then
 			spr(20,room_x*128+8,16)
 		else

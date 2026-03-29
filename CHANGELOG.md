@@ -1,7 +1,9 @@
 # CHANGELOG.md
 
-## v2026.1
+## v2026.2
 
+- Bumped version to `v2026.2`.
+- Recorded rough-vs-actual token calibration for future Codex work.
 - Added initial project changelog and title-screen version display.
 - Added title/help flow before world start.
 - Added persistent high score with default value `100`.
@@ -9,8 +11,7 @@
 - Added timed day/event messages on the status bar.
 - Added algae blooms and algae pickup/feed behavior.
 - Added old tank effects and related day messaging.
-- Added multiple shops including plant, discount, culling, shrimp sell, and extra fancy.
-- Added premium shrimp store options including metallic and devil-eyes shrimp.
+- Added multiple shops including plant, discount, culling, shrimp sell, and genetics.
 - Added held-creature and inventory display refinements.
 - Held items now drop to the left or right based on the player's last horizontal input.
 - Reduced shrimp hitboxes to help prevent them sticking together:
@@ -20,3 +21,22 @@
 - Moss balls can now be picked up and carried.
 - Game-over score now weights days survived more heavily.
 - Fancy shrimp purity now scales from `1.0` up to `0.2 + current max purity`.
+- Added new `sp>=5` shrimp color tier and birth events: `Calico!` and `Jelly!`.
+- Cull shop is now a free yes/no action that removes all shrimp below `0.5`.
+- Breeding mutation odds updated for Riley and Devil Eyes.
+- Default shrimp Riley and Devil Eyes odds now match the new mutation-style rates.
+- Fancy shrimp now share doubled Riley/Devil odds from the same base rates.
+- Replaced the day-19 premium shrimp store with the Genetics Shop.
+- Genetics Shop now upgrades breeding purity, Riley mutation odds, and Devil mutation odds.
+- Removed the shrimp wall-escape pass.
+- Shrimp hitboxes are now smaller again to reduce tile-edge snagging.
+- Fixed held-snail HUD placement so it draws in the intended slot.
+- Fixed the inspect dialog so moss/algae no longer go through the shrimp/snail stat popup path.
+- Recorded another rough-vs-actual token calibration point for Codex work.
+- Coins now respawn slightly faster while keeping the existing active-cap behavior.
+- Snails now ignore entity collision, move more actively, and stop at ledges instead of walking off.
+- Held creatures now drop only `1` tile left/right, and blocked drops are refused instead of falling back into bad placements.
+- Blocked drops now play `sfx(6)`.
+- Drop placement now uses a slightly inset map hitbox so near-wall drops are less rigid.
+- Main-shop and discount-shop fancy shrimp now each have separate stock of `3`, shown in parentheses and turning red when sold out.
+- Algae now ignore blocked-drop validation so they can be picked up and placed rapidly.

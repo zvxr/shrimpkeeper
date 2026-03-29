@@ -23,6 +23,9 @@ function solid_ent(a, dx, dy)
 			local y=(a.y+dy)-a2.y
 			if abs(x) < a.w+a2.w and
 				abs(y) < a.h+a2.h then
+				if a.np!=nil or a2.np!=nil then
+					return false
+				end
 				if a.sa!=nil and a2.sa!=nil then
 					return false
 				end

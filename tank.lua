@@ -21,7 +21,12 @@ function init_tank()
 		i1=0,
 		i2=0,
 		i1p=0,
-		i1b=false
+		i1b=false,
+		gp=0,
+		gr=0,
+		gd=0,
+		f1=3,
+		f4=3
 	}
 end
 
@@ -264,7 +269,7 @@ function upd_tank()
 	if tank.t%750==0 then chem_step() end
 	chk_go()
 	tank.ct+=1
-	if tank.ct>=120 then
+	if tank.ct>=100 then
 		tank.ct=0
 		add_coin()
 	end
@@ -279,22 +284,22 @@ function use_item()
 		elseif tank.i1==2 then
 			a=make_shrimp(pl.x+1,pl.y)
 			a.sp=fancy_sp()
-			a.sr=rnd(1)<0.5
-			a.sd=rnd(1)<0.1
+			a.sr=rnd(20)<sr_o*2
+			a.sd=rnd(20)<sd_o*2
 		elseif tank.i1==5 then
 			a=make_shrimp(pl.x+1,pl.y)
 			a.sp=fancy_sp()
-			a.sr=rnd(1)<0.5
-			a.sd=rnd(1)<0.1
+			a.sr=rnd(20)<sr_o*2
+			a.sd=rnd(20)<sd_o*2
 		elseif tank.i1==6 then
 			a=make_shrimp(pl.x+1,pl.y)
 			a.sp=2
-			a.sr=rnd(1)<0.5
-			a.sd=rnd(1)<0.1
+			a.sr=rnd(20)<sr_o*2
+			a.sd=rnd(20)<sd_o*2
 		elseif tank.i1==7 then
 			a=make_shrimp(pl.x+1,pl.y)
 			a.sp=1.5
-			a.sr=rnd(1)<0.5
+			a.sr=rnd(20)<sr_o*2
 			a.sd=true
 		elseif tank.i1==3 then
 			make_micro(pl.x+1,pl.y)

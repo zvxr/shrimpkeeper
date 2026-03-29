@@ -14,7 +14,7 @@ __lua__
 #include player.lua
 #include spawn.lua
 
-ver="v2026.1"
+ver="v2026.2"
 
 function init_title()
 	gs=0

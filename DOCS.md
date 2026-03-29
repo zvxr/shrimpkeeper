@@ -64,16 +64,16 @@ Created by `make_ent(k,x,y)`.
 - on each new day, shrimp age by `1`
 - fry use sprite strip `53..56` as `1x1`
 - adults use sprite strip starting at `37` with `+2` frame steps as `2x1`
-- fry hitbox is currently smaller than the full tile
-- adult hitbox is currently narrower/flatter than the full sprite
+- fry hitbox is currently `w=0.2`, `h=0.25`
+- adult hitbox is currently `w=0.42`, `h=0.25`
 
 ### Defaults
 
 - `sa=8`
 - `sp=0.5`
 - `sb`: 50/50 random
-- `sr`: 40/60 random
-- `sd`: 20/80 random
+- `sr`: 4/20 random
+- `sd`: 1/20 random
 
 ### Initial Spawn
 
@@ -110,17 +110,23 @@ Created by `make_ent(k,x,y)`.
 - success creates one fry with `sa=1`
 - successful breeding plays `sfx(4)`
 - baby values:
-  - `sp`: random from `(lowest-0.2)` to `(highest+0.2)`, then `+ tank.kh/4`
+  - `sp`: random from `(lowest-0.2)` to `(highest+0.2)`, then `+ tank.kh/4 + tank.gp*0.2`
   - `sb`: shared parent base color
   - `sr`: `TT -> T`, `TF -> 50% T`, `FF -> F`
   - `sd`: `TT -> T`, `TF -> 50% T`, `FF -> F`
 - mutations:
   - `1/10`: `sp += 1`
-  - `1/20`: `sr=true`
-  - `1/100`: `sd=true`
+  - `4/20 + gr/20`: `sr=true`
+  - `1/20 + gd/20`: `sd=true`
+  - fancy shrimp use doubled trait odds:
+    - `8/20`: `sr=true`
+    - `2/20`: `sd=true`
   - if a baby is born with `sp>=2`, the day message shows:
     - `BloodyMary!` for red-line shrimp
     - `GreenJade!` for yellow-line shrimp
+  - if a baby is born with `sp>=5`, the day message shows:
+    - `Calico!` for red-line shrimp
+    - `Jelly!` for yellow-line shrimp
   - otherwise, if any mutation happens, the day message shows `Mutation!`
 
 ### Palette Mapping
@@ -133,18 +139,21 @@ Created by `make_ent(k,x,y)`.
 - eyes `14`
 
 - `body`
+  - `sp>=5`: `[15/12]`
   - `sp>=2`: `[2/3]`
   - `sp>=0.7`: `[8/11]`
   - `sp>=0.5`: `[9/10]`
   - else `[4/5]`
 
 - `back`
+  - `sp>=5`: `[15/12]`
   - `sp>=2`: `[2/3]`
   - `sp>=0.9`: `[8/11]`
   - `sp>=0.6`: `[9/10]`
   - else `[4/5]`
 
 - `belly`
+  - if `sr` and `sp>=5`: `[9/1]`
   - if `sr` and `sp>0.7`: `7`
   - else body color
 
@@ -178,7 +187,7 @@ Created by `make_ent(k,x,y)`.
   - `np>0.4`: `[9/10]`
   - else `5`
 - snails do not age or breed
-- snails wander slowly and mostly idle
+- snails are more active now, ignore entity collision, and avoid walking off ledges
 
 ## Algae
 
@@ -229,7 +238,7 @@ Created by `make_ent(k,x,y)`.
 - `msg`: short timed status-bar message
 - `msgc`: message color
 - `mt`: message timer
-- `sm`: shop mode (`0` off, `1` normal, `2` plant, `3` shrimp sell, `4` discount, `5` cull, `6` special); compare with `>0`
+- `sm`: shop mode (`0` off, `1` normal, `2` plant, `3` shrimp sell, `4` discount, `5` cull, `6` genetic); compare with `>0`
 - `ss`: current shop selection (`1..5`)
 - `ps`: whether the plant shop is unlocked
 - `rx`: red-condition warning count
@@ -238,6 +247,11 @@ Created by `make_ent(k,x,y)`.
 - `i2`: item inventory slot at `(3,2)`
 - `i1p`: stored snail purity for creature slot
 - `i1b`: stored snail base color for creature slot
+- `gp`: genetics-shop purity upgrade count
+- `gr`: genetics-shop Riley mutation upgrade count
+- `gd`: genetics-shop Devil mutation upgrade count
+- `f1`: main-shop fancy stock left
+- `f4`: discount-shop fancy stock left
 - one day is currently `1500` updates
 - the day clock now rolls every day instead of growing forever, to avoid PICO-8 number overflow
 - tank parameter drift is currently applied every `750` updates
@@ -253,6 +267,7 @@ Created by `make_ent(k,x,y)`.
 - HUD shows `Ct:` count above `day` in dark green
 - day messages last about `5` seconds and are chosen on new day with this priority:
   - `Algae bloom!` in dark green on bloom days
+  - `Calico!` or `Jelly!` in green if a shrimp is born with `sp>=5`
   - `BloodyMary!` or `GreenJade!` in green if a shrimp is born with `sp>=2`
   - `Mutation!` in green if a breeding mutation happened
   - `Shop opened!` in pink on day `12` and day `19`
@@ -365,10 +380,13 @@ Created by `make_ent(k,x,y)`.
 - only one creature can be held at a time
 - held shrimp draw with sprite `52`
 - held shrimp show `*` under `gH` when they are sellable
-- held snails draw with sprite `48`
+- held snails draw with sprite `48` one HUD row higher than the other held icons
 - held moss balls draw with sprite `20`
 - held icon is drawn at tile `(1,2)` on the current screen
-- dropping the held creature places it to the left or right based on the last horizontal input
+- dropping the held creature tries exactly `1` tile left or right based on the last horizontal input
+- drop validation uses a slightly inset map hitbox, so near-wall placement is a bit less rigid than full movement collision
+- algae ignore that blocked-drop validation so they can be placed quickly without refusal
+- if that drop spot is blocked by map or entity collision, the creature stays held
 
 ## Shop
 
@@ -382,16 +400,21 @@ Created by `make_ent(k,x,y)`.
 - pressing `up` on the discount shop opens the discount menu
 - if there is an adult shrimp with `purity >= 2.0`, the culling shop graphic `15` is drawn at `(30,10)`
 - pressing `up` on the culling shop opens the cull menu
-- on day `19+`, the special shop graphic `31` is drawn at `(53,4)`
-- pressing `up` on the special shop opens the special shrimp menu
+- on day `19+`, the genetics shop graphic `31` is drawn at `(53,4)`
+- pressing `up` on the genetics shop opens the genetics menu
 - purchases only work if `money>=cost`
 - creature purchases use slot `(2,2)`
   - `snail` cost `16`, icon `48`
-  - `fancy` cost `30`, icon `52`
-  - `metallic` cost `40`, icon `52`
-  - `devil eyes` cost `30`, icon `52`
+  - `fancy` cost `30`, icon `52`, stock `3`
   - `bacter ae` cost `24`, icon `16`
   - `moss ball` cost `12`, icon `20`
+- genetics shop upgrades are immediate and do not use inventory
+  - `purity+` cost `20`, count shown in parentheses, adds `+0.2` baby purity
+  - `riley+` cost `6`, count shown in parentheses, adds `+1/20` Riley mutation chance
+  - `devil+` cost `10`, count shown in parentheses, adds `+1/20` Devil mutation chance
+  - genetics purchases play `sfx(3)`
+- main-shop and discount-shop `fancy` shrimp each have separate stock of `3`
+- when a fancy stock reaches `0`, the row is shown in red and can no longer be bought
 - item purchases use slot `(3,2)`
   - `water change` cost `5`, icon `49`
   - `ro water change` cost `6`, icon `32`
@@ -432,9 +455,8 @@ Created by `make_ent(k,x,y)`.
   - `moss ball` cost `10`
   - `fancy` cost `20`
 - culling shop sells:
-  - remove fry cost `10`
-  - remove adult cost `8`
-  - only shrimp with `purity < 0.5` are eligible
+  - free yes/no cull confirmation
+  - all shrimp with `purity < 0.5` are removed at once
   - if no eligible shrimp exist, it shows `no naturals`
 - if no held shrimp is available, the shrimp shop shows `No shrimp to sell`
 - shrimp with `sp < 0.5` cannot be sold
@@ -444,15 +466,15 @@ Created by `make_ent(k,x,y)`.
   - `Z`: exit
 - using `fancy` spawns an adult shrimp with:
   - `sp=1.0..(0.2 + current max purity)`
-  - `sr` 50% chance
-  - `sd` 10% chance
+  - `sr` 8/20 chance
+  - `sd` 2/20 chance
 - using `metallic` spawns an adult shrimp with:
   - `sp=2.0`
-  - `sr` 50% chance
-  - `sd` 10% chance
+  - `sr` 8/20 chance
+  - `sd` 2/20 chance
 - using `devil eyes` spawns an adult shrimp with:
   - `sp=1.5`
-  - `sr` 50% chance
+  - `sr` 8/20 chance
   - `sd` always true
 
 ## Doors

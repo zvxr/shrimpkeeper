@@ -1,4 +1,6 @@
 ent = {}
+sr_o=4
+sd_o=1
 
 function make_ent(k, x, y)
 	a={

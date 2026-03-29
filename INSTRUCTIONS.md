@@ -33,7 +33,9 @@ This is a shrimp tank management game.
 - `Up`: enter a shop or interact with a shop tile
 - `Z` near a shrimp or snail: inspect it
 - `Down + Z` near a shrimp, snail, algae, or moss ball: pick it up if your hands are empty
-- `Z` while holding something: drop it on the side of the player based on the last left/right input
+- `Z` while holding something: try to drop it `1` tile to the side based on the last left/right input
+- if that drop spot is blocked, it stays in your hands
+- algae are the exception and can still be placed quickly even in blocked spots
 - `Z` with no nearby creature and no held creature: use the current inventory item
 - On the title screen, use `Up` / `Down` to move between `Start` and `Help`
 - On the title and help pages, press `X` to confirm / continue
@@ -167,6 +169,7 @@ There are several shops in the tank.
 - accessed from the normal door tiles
 - sells the core water items and basic livestock
 - includes water change, `kH+`, `gH+`, snail, and fancy shrimp
+- fancy shrimp stock starts at `3`
 
 ### Plant Shop
 
@@ -180,11 +183,13 @@ There are several shops in the tank.
 - used to sell held shrimp
 - turns a held shrimp into money based on purity and traits
 
-### Extra Fancy Shop
+### Genetics Shop
 
 - appears on day `19+`
-- sells premium shrimp options
-- includes fancy shrimp, metallic shrimp, and devil-eyes shrimp
+- sells breeding upgrades instead of livestock
+- `Purity+` raises baby purity by `0.2` per purchase
+- `Riley+` raises Riley mutation chance by `1/20` per purchase
+- `Devil+` raises Devil Eyes mutation chance by `1/20` per purchase
 
 ### Discount Shop
 
@@ -192,13 +197,14 @@ There are several shops in the tank.
 - this is based on the current tank state, not a permanent unlock
 - sells discounted versions of a few existing items
 - includes water change, moss ball, and fancy shrimp
+- fancy shrimp stock starts at `3` here too, tracked separately from the main shop
 
 ### Culling Shop
 
 - appears when there is at least `1` adult shrimp with purity `>= 2.0`
 - this is based on the current tank state, not a permanent unlock
-- removes low-purity natural shrimp for a fee
-- can cull fry or adults with purity below `0.5`
+- removes all low-purity shrimp for free
+- affects every shrimp with purity below `0.5`
 
 ## Shrimp
 

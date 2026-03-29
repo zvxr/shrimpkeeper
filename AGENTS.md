@@ -15,6 +15,14 @@ Goals: small code, low token usage, fast iteration, simple patterns.
 - Be mindful of the **8192 token limit**.
 - Prefer concise patterns over generic/expandable ones.
 - **Use multiple files/includes freely** for organization (file boundaries do not increase token cost).
+- Token estimator calibration:
+  - rough estimate observed: `8649`
+  - actual PICO-8 token count observed: `6476`
+  - actual has been about `75%` of the rough estimate in this cart
+  - rough estimate observed: `8762`
+  - actual PICO-8 token count observed: `6555`
+  - actual has again been about `75%` of the rough estimate in this cart
+  - treat the rough estimator as conservative and keep collecting real vs estimated counts over time
 
 ## PICO-8 specifics
 - Sprite ids (0–255) index the sprite sheet (16x16 tiles of 8x8).

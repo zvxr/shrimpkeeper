@@ -42,7 +42,7 @@ function on_cull(a)
 	return cull_ok() and touch_tile(a,30,10)
 end
 
-function on_xf(a)
+function on_gen(a)
 	return tank.day>=19 and touch_tile(a,53,4)
 end
 
@@ -61,8 +61,8 @@ function try_door(a)
 		tank.ss=1
 	elseif on_cull(a) and btnp(2) then
 		tank.sm=5
-		tank.ss=cull_n(1)>0 and 1 or 2
-	elseif on_xf(a) and btnp(2) then
+		tank.ss=1
+	elseif on_gen(a) and btnp(2) then
 		tank.sm=6
 		tank.ss=1
 	end
