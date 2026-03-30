@@ -1,6 +1,6 @@
 function shop_cost()
 	if tank.sm==5 then
-		return tank.ss==1 and 1 or 40
+		return 10
 	end
 	if tank.sm==4 then
 		return tank.ss==1 and 3 or tank.ss==2 and 10 or 20
@@ -14,7 +14,7 @@ function shop_cost()
 	if tank.sm==2 then
 		return tank.ss==1 and 6 or tank.ss==2 and 24 or 12
 	end
-	return tank.ss==1 and 5 or tank.ss==2 and 10 or tank.ss==3 and 6 or tank.ss==4 and 16 or 30
+	return tank.ss==1 and 5 or tank.ss==2 and 10 or tank.ss==3 and 6 or tank.ss==4 and 8 or 16
 end
 
 function shrimp_price()
@@ -53,15 +53,9 @@ function buy_shop()
 	local c=shop_cost()
 	if tank.money<c then return end
 	if tank.sm==5 then
-		if tank.ss==1 then
-			if tank.i2>0 then return end
-			tank.i2=49
-		else
-			if tank.f5<1 then return end
-			if tank.i1>0 then return end
-			tank.i1=2
-			tank.f5-=1
-		end
+		if not ha or ha.sa==nil or ha.sa>=5 then return end
+		ha.sa+=1
+		shrimp_size(ha)
 	elseif tank.sm==6 then
 		if tank.ss==1 then
 			tank.gp+=1
@@ -107,15 +101,14 @@ function buy_shop()
 	elseif tank.ss<4 then
 		if tank.i2>0 then return end
 		tank.i2=48+tank.ss
+	elseif tank.ss<5 then
+		if tank.i2>0 then return end
+		tank.i2=tank.ss==4 and 208 or 48+tank.ss
 	else
-		if tank.ss==5 and tank.f1<1 then return end
 		if tank.i1>0 then return end
-		tank.i1=tank.ss-3
-		if tank.ss==5 then tank.f1-=1 end
-		if tank.i1==1 then
-			tank.i1p=rnd(1)
-			tank.i1b=rnd(1)<0.5
-		end
+		tank.i1=1
+		tank.i1p=rnd(1)
+		tank.i1b=rnd(1)<0.5
 	end
 	tank.money-=c
 	if tank.sm==6 then sfx(3) end
@@ -132,11 +125,18 @@ function upd_shop()
 			tank.sm=0
 		end
 		return
+	elseif tank.sm==5 then
+		if btnp(5) and ha and ha.sa!=nil and ha.sa<5 and tank.money>=10 then
+			buy_shop()
+		elseif btnp(4) then
+			tank.sm=0
+		end
+		return
 	end
 	if btnp(2) then
 		tank.ss=max(1,tank.ss-1)
 	elseif btnp(3) then
-		tank.ss=min((tank.sm==5 or tank.sm==7) and 2 or (tank.sm==2 or tank.sm==6) and 3 or 5,tank.ss+1)
+		tank.ss=min(tank.sm==7 and 2 or (tank.sm==2 or tank.sm==5 or tank.sm==6) and 3 or 5,tank.ss+1)
 	elseif btnp(5) then
 		buy_shop()
 	elseif btnp(4) then
@@ -169,11 +169,18 @@ function draw_shop()
 			print("z exit",46,72,7)
 		end
 	elseif tank.sm==5 then
-		print("fine",52,28,7)
-		draw_shop_row(1,48,"water",1)
-		draw_shop_row(2,58,"fancy ("..tank.f5..")",40,tank.f5<1)
+		if ha and ha.sa!=nil and ha.sa<5 then
+			print("grow shop",36,40,7)
+			print("grow age?",38,56,7)
+			print("x $10  z no",38,72,7)
+		else
+			print("grow shop",36,40,7)
+			print("bring fry",38,56,7)
+			print("to age",46,66,7)
+			print("z exit",46,78,7)
+		end
 	elseif tank.sm==4 then
-		print("discount",40,28,7)
+		print("thrift",44,28,7)
 		draw_shop_row(1,38,"water",3)
 		draw_shop_row(2,48,"moss ("..tank.m4..")",10,tank.m4<1)
 		draw_shop_row(3,58,"fancy ("..tank.f4..")",20,tank.f4<1)
@@ -196,7 +203,7 @@ function draw_shop()
 		draw_shop_row(1,38,"water",5)
 		draw_shop_row(2,48,"kh+",10)
 		draw_shop_row(3,58,"gh+",6)
-		draw_shop_row(4,68,"snail",16)
-		draw_shop_row(5,78,"fancy ("..tank.f1..")",30,tank.f1<1)
+		draw_shop_row(4,68,"tds+",8)
+		draw_shop_row(5,78,"snail",16)
 	end
 end

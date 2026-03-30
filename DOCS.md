@@ -196,6 +196,8 @@ Created by `make_ent(k,x,y)`.
 - `ap`: algae marker
 - algae are solid and can be picked up with the same held-object flow as shrimp/snails
 - algae do not move on their own
+- algae do not block other algae, so algae clumps can slide together more easily
+- algae blooms do not place algae in the top `3` HUD rows
 - if a snail gets close enough to algae, the algae disappears, `tds` drops by `3`, and `sfx(8)` plays
 - every `10` days, an algae bloom happens on days `10`, `20`, `30`, etc.
 - bloom adds `4 + day/10` algae blocks to each of the first `4` screens
@@ -239,7 +241,7 @@ Created by `make_ent(k,x,y)`.
 - `msgc`: message color
 - `mt`: message timer
 - `pu`, `su`, `du`, `fu`, `gu`, `hu`: one-time shop-unlock sound flags
-- `sm`: shop mode (`0` off, `1` normal, `2` plant, `3` shrimp sell, `4` discount, `5` cull, `6` genetic); compare with `>0`
+- `sm`: shop mode (`0` off, `1` normal, `2` plant, `3` shrimp sell, `4` thrift, `5` cull, `6` genetic); compare with `>0`
 - `ss`: current shop selection (`1..5`)
 - `ps`: legacy field, no longer used for plant-shop visibility
 - `rx`: red-condition warning count
@@ -252,14 +254,13 @@ Created by `make_ent(k,x,y)`.
 - `gp`: genetics-shop purity upgrade count
 - `gr`: genetics-shop Riley mutation upgrade count
 - `gd`: genetics-shop Devil mutation upgrade count
-- `f1`: main-shop fancy stock left
-- `f4`: discount-shop fancy stock left
-- `f5`: fine-shop fancy stock left
+- `f4`: thrift-shop fancy stock left
 - `b2`: plant-shop bacter ae stock left
 - `b7`: glass-shop bacter ae stock left
 - `m2`: plant-shop moss stock left
-- `m4`: discount-shop moss stock left
+- `m4`: thrift-shop moss stock left
 - one day is currently `1500` updates
+- tank starts at `kh=0`
 - the day clock now rolls every day instead of growing forever, to avoid PICO-8 number overflow
 - tank parameter drift is currently applied every `750` updates
 - tank parameter status uses:
@@ -403,22 +404,23 @@ Created by `make_ent(k,x,y)`.
 ## Shop
 
 - pressing `up` on a door opens the shop
-- when a shop becomes available for the first time, it plays `sfx(8)` once
+- when a shop becomes available for the first time, it plays `sfx(7)` once
 - when there are `10+` shrimp total, the plant shop is visible
 - plant shop graphic `12` is drawn at `(25,4)`
 - pressing `up` on the plant shop opens the plant menu
 - on day `12+`, the shrimp shop graphic `13` is drawn at `(45,5)`
 - pressing `up` on the shrimp shop opens the shrimp sell prompt
-- if there is a snail in each of the four rooms, the discount shop graphic `14` is drawn at `(33,11)`
-- pressing `up` on the discount shop opens the discount menu
-- if there is a shrimp with `purity >= 5.0`, the fine shop graphic `15` is drawn at `(30,10)`
-- pressing `up` on the fine shop opens the fine menu
+- if there is a snail in each of the four rooms, or any shrimp has purity `<0.5`, the thrift shop graphic `14` is drawn at `(33,11)`
+- pressing `up` on the thrift shop opens the thrift menu
+- if there is any adult shrimp, the grow shop graphic `15` is drawn at `(30,10)`
+- pressing `up` on the grow shop opens the grow menu
 - on day `19+`, the genetics shop graphic `31` is drawn at `(53,4)`
 - pressing `up` on the genetics shop opens the genetics menu
 - if there are `20+` shrimp or the tank is on day `35+`, the glass shop graphic `63` is drawn at `(1,14)`
 - pressing `up` on the glass shop opens the glass menu
 - purchases only work if `money>=cost`
 - creature purchases use slot `(2,2)`
+  - `tds+` cost `8`, icon `208`
   - `snail` cost `16`, icon `48`
   - `fancy` cost `30`, icon `52`, stock `3`
   - `bacter ae` cost `24`, icon `16`, stock `4`
@@ -428,14 +430,14 @@ Created by `make_ent(k,x,y)`.
   - `riley+` cost `6`, count shown in parentheses, adds `+1/20` Riley mutation chance
   - `devil+` cost `10`, count shown in parentheses, adds `+1/20` Devil mutation chance
   - genetics purchases play `sfx(3)`
-- main-shop and discount-shop `fancy` shrimp each have separate stock of `3`
+- thrift-shop `fancy` shrimp stock is tracked separately at `3`
 - when a fancy stock reaches `0`, the row is shown in red and can no longer be bought
 - fine-shop `fancy` stock is `3`
 - plant-shop `bacter ae` stock is `4`
 - glass-shop `bacter ae` stock is `4`
 - glass-shop `bacter ae` costs `28`
 - when bacter ae reaches `0`, the row is shown in red and can no longer be bought
-- plant-shop and discount-shop `moss ball` each have separate stock of `10`
+- plant-shop and thrift-shop `moss ball` each have separate stock of `10`
 - when a moss stock reaches `0`, the row is shown in red and can no longer be bought
 - item purchases use slot `(3,2)`
   - `water change` cost `5`, icon `49`
@@ -463,8 +465,10 @@ Created by `make_ent(k,x,y)`.
 - using `mineral kh+`:
   - `stab -= 20`
   - `kh += 3`
-  - `gh += 2`
   - `tds += 40`
+- using `tds+`:
+  - `stab -= 15`
+  - `tds += 100`
 - using `mineral gh+`:
   - `stab -= 20`
   - `gh += 4`
@@ -475,13 +479,14 @@ Created by `make_ent(k,x,y)`.
 - using `snail` spawns that stored snail next to the player
 - using `bacter ae` places a microorganism next to the player
 - using `moss ball` places a moss ball next to the player
-- discount shop sells:
+- thrift shop sells:
   - `water change` cost `3`
   - `moss ball` cost `10`, stock `10`
   - `fancy` cost `20`
-- fine shop sells:
-  - `water` cost `1`
-  - `fancy` cost `40`, stock `3`
+- grow shop:
+  - if a held shrimp is a fry, it offers `Grow Age?` for `10`
+  - accepting increases the held fry age by `1`
+  - otherwise it shows `Bring fry to age`
 - if no held shrimp is available, the shrimp shop shows `No shrimp to sell`
 - shrimp with `sp < 0.5` cannot be sold
 - shrimp sell value is `(flr(sp*5) + 2 if sr + 5 if sd) * 2`

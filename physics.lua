@@ -26,6 +26,9 @@ function solid_ent(a, dx, dy)
 				if a.np!=nil or a2.np!=nil then
 					return false
 				end
+				if a.ap!=nil and a2.ap!=nil then
+					return false
+				end
 				if a.sa!=nil and a2.sa!=nil then
 					return false
 				end

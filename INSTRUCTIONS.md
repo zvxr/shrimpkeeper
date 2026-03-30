@@ -168,7 +168,7 @@ There are several shops in the tank.
 - always available
 - accessed from the normal door tiles
 - sells the core water items and basic livestock
-- includes water change, `kH+`, `gH+`, snail, and fancy shrimp
+- includes water change, `kH+`, `gH+`, `TDS+`, and snail
 - fancy shrimp stock starts at `3`
 
 ### Plant Shop
@@ -201,21 +201,23 @@ There are several shops in the tank.
 - bacter ae stock starts at `4`
 - glass-shop `Bacter AE` costs `28`
 
-### Discount Shop
+### Thrift Shop
 
-- appears when there is at least `1` snail in each of the `4` rooms
+- appears when there is at least `1` snail in each of the `4` rooms`, or any shrimp has purity `< 0.5`
 - this is based on the current tank state, not a permanent unlock
 - sells discounted versions of a few existing items
 - includes water change, moss ball, and fancy shrimp
 - moss ball stock starts at `10` here too, tracked separately from the plant shop
 - fancy shrimp stock starts at `3` here too, tracked separately from the main shop
 
-### Fine Shop
+### Grow Shop
 
-- appears when there is at least `1` shrimp with purity `>= 5.0`
+- appears when there is at least `1` adult shrimp
 - this is based on the current tank state, not a permanent unlock
-- sells cheap water and fancy shrimp
-- fancy shrimp stock starts at `3`
+- expects you to be holding a fry
+- if you bring a held fry, it offers `Grow Age?` for `10`
+- buying it increases that held fry's age by `1`
+- if you are not holding a fry, it shows `Bring fry to age`
 
 ## Shrimp
 

@@ -3,7 +3,7 @@ function init_tank()
 		ph=7.0,
 		amm=0.0,
 		stab=100,
-		kh=4.0,
+		kh=0,
 		gh=6.0,
 		tds=140,
 		money=0,
@@ -133,12 +133,15 @@ function fry_n()
 	return s
 end
 
-function disc_ok()
+function thr_ok()
 	local a=false
 	local b=false
 	local c=false
 	local d=false
 	for e in all(ent) do
+		if e.sa!=nil and e.sp<0.5 then
+			return true
+		end
 		if e.np!=nil then
 			local x=flr(e.x/16)
 			if x==0 then
@@ -214,7 +217,7 @@ function score_n()
 end
 
 function cull_ok()
-	return max_pur()>=5
+	return adult_n()>0
 end
 
 function plant_ok()
@@ -263,11 +266,11 @@ function upd_tank()
 	local u=false
 	if not tank.pu and plant_ok() then tank.pu=true u=true end
 	if not tank.su and tank.day>=12 then tank.su=true u=true end
-	if not tank.du and disc_ok() then tank.du=true u=true end
+	if not tank.du and thr_ok() then tank.du=true u=true end
 	if not tank.fu and cull_ok() then tank.fu=true u=true end
 	if not tank.gu and tank.day>=19 then tank.gu=true u=true end
 	if not tank.hu and ph_ok() then tank.hu=true u=true end
-	if u then sfx(8) end
+	if u then sfx(7) end
 	if tank.t>=1500 then
 		tank.t=0
 		tank.day+=1
@@ -357,8 +360,10 @@ function use_item()
 		elseif tank.i2==50 then
 			tank.stab-=20
 			tank.kh+=3
-			tank.gh+=2
 			tank.tds+=40
+		elseif tank.i2==208 then
+			tank.stab-=15
+			tank.tds+=100
 		elseif tank.i2==192 then
 			tank.ph+=0.1
 		else

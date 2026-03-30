@@ -35,7 +35,7 @@ function on_shrimp_shop(a)
 end
 
 function on_disc(a)
-	return disc_ok() and touch_tile(a,33,11)
+	return thr_ok() and touch_tile(a,33,11)
 end
 
 function on_cull(a)

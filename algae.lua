@@ -11,7 +11,8 @@ function make_algae(x,y)
 end
 
 function algae_bad(x,y)
-	return solid(x,y) or
+	return y<3 or
+		solid(x,y) or
 		(x==60 and y==5) or
 		(x==5 and y==4) or
 		(x==25 and y==4) or
