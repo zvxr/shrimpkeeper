@@ -20,4 +20,5 @@
 - Game over now pauses for about `1` second before allowing return to the title.
 - Shops now play `sfx(8)` the first time they become available.
 - Base breeding success is now `2/3` per eligible room.
+- Snails eating algae now lower `TDS` by `3` and play `sfx(8)`.
 - Recorded rough-vs-actual token calibration notes for future Codex work.

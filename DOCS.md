@@ -196,7 +196,7 @@ Created by `make_ent(k,x,y)`.
 - `ap`: algae marker
 - algae are solid and can be picked up with the same held-object flow as shrimp/snails
 - algae do not move on their own
-- if a snail gets close enough to algae, the algae disappears
+- if a snail gets close enough to algae, the algae disappears, `tds` drops by `3`, and `sfx(8)` plays
 - every `10` days, an algae bloom happens on days `10`, `20`, `30`, etc.
 - bloom adds `4 + day/10` algae blocks to each of the first `4` screens
 - bloom placement avoids:

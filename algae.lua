@@ -48,6 +48,8 @@ function upd_algae()
 				if b.np!=nil and
 					abs(a.x-b.x)<1.2 and
 					abs(a.y-b.y)<1.2 then
+					tank.tds=max(0,tank.tds-3)
+					sfx(8)
 					del(ent,a)
 					break
 				end
