@@ -15,9 +15,15 @@ function init_tank()
 		mt=0,
 		sm=0,
 		ss=1,
-		ps=false,
+		pu=false,
+		su=false,
+		du=false,
+		fu=false,
+		gu=false,
+		hu=false,
 		rx=0,
 		go=false,
+		got=0,
 		i1=0,
 		i2=0,
 		i1p=0,
@@ -27,6 +33,9 @@ function init_tank()
 		gd=0,
 		f1=3,
 		f4=3,
+		f5=3,
+		b2=4,
+		b7=4,
 		m2=10,
 		m4=10
 	}
@@ -96,6 +105,7 @@ function chk_go()
 		if not tank.go then
 			hs=max(hs,flr(score_n()))
 			dset(0,hs)
+			tank.got=30
 		end
 		tank.go=true
 	end
@@ -204,7 +214,15 @@ function score_n()
 end
 
 function cull_ok()
-	return max_pur()>=2
+	return max_pur()>=5
+end
+
+function plant_ok()
+	return adult_n()+fry_n()>=10
+end
+
+function ph_ok()
+	return tank.day>=35 or adult_n()+fry_n()>=20
 end
 
 function tank_step()
@@ -234,7 +252,7 @@ function chem_step()
 			end
 		end
 	end
-	tank.amm=max(0,tank.amm+(f+s*2)*(0.025-m*0.005)+o*0.05)
+	tank.amm=max(0,tank.amm+(f+s*2)*(0.025-m*0.0025)+o*0.05)
 	tank.kh=max(0,tank.kh-0.1)
 	tank.tds+=10+o*2.5
 end
@@ -242,7 +260,14 @@ end
 function upd_tank()
 	tank.t+=1
 	if tank.mt>0 then tank.mt-=1 end
-	if not tank.ps and adult_n()>=8 then tank.ps=true end
+	local u=false
+	if not tank.pu and plant_ok() then tank.pu=true u=true end
+	if not tank.su and tank.day>=12 then tank.su=true u=true end
+	if not tank.du and disc_ok() then tank.du=true u=true end
+	if not tank.fu and cull_ok() then tank.fu=true u=true end
+	if not tank.gu and tank.day>=19 then tank.gu=true u=true end
+	if not tank.hu and ph_ok() then tank.hu=true u=true end
+	if u then sfx(8) end
 	if tank.t>=1500 then
 		tank.t=0
 		tank.day+=1
@@ -334,6 +359,8 @@ function use_item()
 			tank.kh+=3
 			tank.gh+=2
 			tank.tds+=40
+		elseif tank.i2==192 then
+			tank.ph+=0.1
 		else
 			tank.stab-=20
 			tank.gh+=4

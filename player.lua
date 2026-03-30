@@ -27,7 +27,7 @@ function on_door(a)
 end
 
 function on_plant(a)
-	return tank.ps and touch_tile(a,25,4)
+	return plant_ok() and touch_tile(a,25,4)
 end
 
 function on_shrimp_shop(a)
@@ -44,6 +44,10 @@ end
 
 function on_gen(a)
 	return tank.day>=19 and touch_tile(a,53,4)
+end
+
+function on_ph(a)
+	return ph_ok() and touch_tile(a,1,14)
 end
 
 function try_door(a)
@@ -64,6 +68,9 @@ function try_door(a)
 		tank.ss=1
 	elseif on_gen(a) and btnp(2) then
 		tank.sm=6
+		tank.ss=1
+	elseif on_ph(a) and btnp(2) then
+		tank.sm=7
 		tank.ss=1
 	end
 end

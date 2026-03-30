@@ -185,7 +185,7 @@ function breed_room(r)
 		end
 	end
 	if not a2 then return end
-	if rnd(1)<0.5 then
+	if rnd(3)<2 then
 		local m=make_baby(7+flr(rnd(6))+r*16,9+flr(rnd(2)),a1,a2)
 		sfx(4)
 		return m

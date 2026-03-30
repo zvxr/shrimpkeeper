@@ -1,12 +1,15 @@
 function shop_cost()
 	if tank.sm==5 then
-		return 0
+		return tank.ss==1 and 1 or 40
 	end
 	if tank.sm==4 then
 		return tank.ss==1 and 3 or tank.ss==2 and 10 or 20
 	end
 	if tank.sm==6 then
 		return tank.ss==1 and 20 or tank.ss==2 and 6 or 10
+	end
+	if tank.sm==7 then
+		return tank.ss==1 and 20 or 28
 	end
 	if tank.sm==2 then
 		return tank.ss==1 and 6 or tank.ss==2 and 24 or 12
@@ -50,10 +53,15 @@ function buy_shop()
 	local c=shop_cost()
 	if tank.money<c then return end
 	if tank.sm==5 then
-		if cull_one(tank.ss) then
-			tank.sm=0
+		if tank.ss==1 then
+			if tank.i2>0 then return end
+			tank.i2=49
+		else
+			if tank.f5<1 then return end
+			if tank.i1>0 then return end
+			tank.i1=2
+			tank.f5-=1
 		end
-		return
 	elseif tank.sm==6 then
 		if tank.ss==1 then
 			tank.gp+=1
@@ -61,6 +69,16 @@ function buy_shop()
 			tank.gr+=1
 		else
 			tank.gd+=1
+		end
+	elseif tank.sm==7 then
+		if tank.ss==1 then
+			if tank.i2>0 then return end
+			tank.i2=192
+		else
+			if tank.b7<1 then return end
+			if tank.i1>0 then return end
+			tank.i1=3
+			tank.b7-=1
 		end
 	elseif tank.sm==4 then
 		if tank.ss==1 then
@@ -79,9 +97,11 @@ function buy_shop()
 			if tank.i2>0 then return end
 			tank.i2=32
 		else
+			if tank.ss==2 and tank.b2<1 then return end
 			if tank.ss==3 and tank.m2<1 then return end
 			if tank.i1>0 then return end
 			tank.i1=tank.ss+1
+			if tank.ss==2 then tank.b2-=1 end
 			if tank.ss==3 then tank.m2-=1 end
 		end
 	elseif tank.ss<4 then
@@ -113,20 +133,10 @@ function upd_shop()
 		end
 		return
 	end
-	if tank.sm==5 then
-		if btnp(2) or btnp(3) then
-			tank.ss=3-tank.ss
-		elseif btnp(5) then
-			buy_shop()
-		elseif btnp(4) then
-			tank.sm=0
-		end
-		return
-	end
 	if btnp(2) then
 		tank.ss=max(1,tank.ss-1)
 	elseif btnp(3) then
-		tank.ss=min((tank.sm==2 or tank.sm==6) and 3 or 5,tank.ss+1)
+		tank.ss=min((tank.sm==5 or tank.sm==7) and 2 or (tank.sm==2 or tank.sm==6) and 3 or 5,tank.ss+1)
 	elseif btnp(5) then
 		buy_shop()
 	elseif btnp(4) then
@@ -159,15 +169,9 @@ function draw_shop()
 			print("z exit",46,72,7)
 		end
 	elseif tank.sm==5 then
-		print("cull",52,28,7)
-		print("cull low pur?",22,42,7)
-		if cull_n(1)+cull_n(2)>0 then
-			draw_shop_row(1,56,"yes",0)
-			draw_shop_row(2,68,"no",0)
-		else
-			print("no naturals",30,54,7)
-			print("z exit",46,72,7)
-		end
+		print("fine",52,28,7)
+		draw_shop_row(1,48,"water",1)
+		draw_shop_row(2,58,"fancy ("..tank.f5..")",40,tank.f5<1)
 	elseif tank.sm==4 then
 		print("discount",40,28,7)
 		draw_shop_row(1,38,"water",3)
@@ -178,10 +182,14 @@ function draw_shop()
 		draw_shop_row(1,38,"purity+ ("..tank.gp..")",20)
 		draw_shop_row(2,48,"riley+ ("..tank.gr..")",6)
 		draw_shop_row(3,58,"devil+ ("..tank.gd..")",10)
+	elseif tank.sm==7 then
+		print("glass",44,28,7)
+		draw_shop_row(1,38,"ph+",20)
+		draw_shop_row(2,48,"bacter ("..tank.b7..")",28,tank.b7<1)
 	elseif tank.sm==2 then
 		print("plant",52,28,7)
 		draw_shop_row(1,38,"ro water",6)
-		draw_shop_row(2,48,"bacter ae",24)
+		draw_shop_row(2,48,"bacter ("..tank.b2..")",24,tank.b2<1)
 		draw_shop_row(3,58,"moss ("..tank.m2..")",12,tank.m2<1)
 	else
 		print("shop",56,28,7)

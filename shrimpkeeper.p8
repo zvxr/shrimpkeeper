@@ -55,7 +55,11 @@ function _update()
 		return
 	end
 	if tank.go then
-		if btnp(5) then init_title() end
+		if tank.got>0 then
+			tank.got-=1
+		elseif btnp(5) then
+			init_title()
+		end
 		return
 	end
 	if sd_a then
@@ -100,11 +104,12 @@ function _draw()
 	room_y=flr(pl.y/16)
 	camera(room_x*128,room_y*128)
 	map(room_x*16,room_y*16,room_x*128,room_y*128,16,16)
-	if tank.ps then spr(12,25*8,4*8) end
+	if plant_ok() then spr(12,25*8,4*8) end
 	if disc_ok() then spr(14,33*8,11*8) end
 	if cull_ok() then spr(15,30*8,10*8) end
 	if tank.day>=12 then spr(13,45*8,5*8) end
 	if tank.day>=19 then spr(31,53*8,4*8) end
+	if ph_ok() then spr(63,1*8,14*8) end
 	foreach(ent,draw_ent)
 	draw_held_pet()
 	camera()

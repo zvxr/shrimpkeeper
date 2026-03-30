@@ -173,9 +173,10 @@ There are several shops in the tank.
 
 ### Plant Shop
 
-- unlocks permanently once there are `8` adult shrimp
+- appears while there are `10+` shrimp total
 - sells plant-side support items
 - includes `RO Water Change`, `Bacter AE`, and moss ball
+- bacter ae stock starts at `4`
 - moss ball stock starts at `10`
 
 ### Shrimp Shop
@@ -192,6 +193,14 @@ There are several shops in the tank.
 - `Riley+` raises Riley mutation chance by `1/20` per purchase
 - `Devil+` raises Devil Eyes mutation chance by `1/20` per purchase
 
+### Glass Shop
+
+- appears at `20+` shrimp or on day `35+`
+- sells `pH+` and `Bacter AE`
+- `pH+` is a holdable item that raises pH by `0.1`
+- bacter ae stock starts at `4`
+- glass-shop `Bacter AE` costs `28`
+
 ### Discount Shop
 
 - appears when there is at least `1` snail in each of the `4` rooms
@@ -201,12 +210,12 @@ There are several shops in the tank.
 - moss ball stock starts at `10` here too, tracked separately from the plant shop
 - fancy shrimp stock starts at `3` here too, tracked separately from the main shop
 
-### Culling Shop
+### Fine Shop
 
-- appears when there is at least `1` adult shrimp with purity `>= 2.0`
+- appears when there is at least `1` shrimp with purity `>= 5.0`
 - this is based on the current tank state, not a permanent unlock
-- removes all low-purity shrimp for free
-- affects every shrimp with purity below `0.5`
+- sells cheap water and fancy shrimp
+- fancy shrimp stock starts at `3`
 
 ## Shrimp
 
@@ -225,6 +234,7 @@ There are several shops in the tank.
 ### Microorganisms
 
 - microorganisms reduce ammonia growth
+- bacter ae is capped, so microorganism support tops out after `8` purchases
 - they do not collide and stay in place
 
 ### Moss Balls

@@ -104,7 +104,7 @@ Created by `make_ent(k,x,y)`.
   - same `sb`
   - same room
   - no tank parameter is dangerous/red
-  - 50% success roll per room
+  - 2/3 success roll per room
 - each of the `4` rooms is checked separately
 - within an eligible room, a random same-line adult pair is used
 - success creates one fry with `sa=1`
@@ -238,11 +238,13 @@ Created by `make_ent(k,x,y)`.
 - `msg`: short timed status-bar message
 - `msgc`: message color
 - `mt`: message timer
+- `pu`, `su`, `du`, `fu`, `gu`, `hu`: one-time shop-unlock sound flags
 - `sm`: shop mode (`0` off, `1` normal, `2` plant, `3` shrimp sell, `4` discount, `5` cull, `6` genetic); compare with `>0`
 - `ss`: current shop selection (`1..5`)
-- `ps`: whether the plant shop is unlocked
+- `ps`: legacy field, no longer used for plant-shop visibility
 - `rx`: red-condition warning count
 - `go`: game-over state
+- `got`: game-over input lock timer
 - `i1`: creature inventory slot at `(2,2)`
 - `i2`: item inventory slot at `(3,2)`
 - `i1p`: stored snail purity for creature slot
@@ -252,6 +254,9 @@ Created by `make_ent(k,x,y)`.
 - `gd`: genetics-shop Devil mutation upgrade count
 - `f1`: main-shop fancy stock left
 - `f4`: discount-shop fancy stock left
+- `f5`: fine-shop fancy stock left
+- `b2`: plant-shop bacter ae stock left
+- `b7`: glass-shop bacter ae stock left
 - `m2`: plant-shop moss stock left
 - `m4`: discount-shop moss stock left
 - one day is currently `1500` updates
@@ -322,7 +327,7 @@ Created by `make_ent(k,x,y)`.
 - every `375` updates:
   - `stab += 15 + moss_balls*2.5`, capped at `100`
 - every `750` updates:
-  - `amm += (fry + adult_shrimp*2) * (0.025 - microorganisms*0.005)`, floored at `0`
+  - `amm += (fry + adult_shrimp*2) * (0.025 - microorganisms*0.0025)`, floored at `0`
   - `kh -= 0.1`, floored at `0`
   - `tds += 10`
 - old tank syndrome starts on day `18`
@@ -398,22 +403,25 @@ Created by `make_ent(k,x,y)`.
 ## Shop
 
 - pressing `up` on a door opens the shop
-- once `8` adult shrimp exist, the plant shop unlocks permanently
+- when a shop becomes available for the first time, it plays `sfx(8)` once
+- when there are `10+` shrimp total, the plant shop is visible
 - plant shop graphic `12` is drawn at `(25,4)`
 - pressing `up` on the plant shop opens the plant menu
 - on day `12+`, the shrimp shop graphic `13` is drawn at `(45,5)`
 - pressing `up` on the shrimp shop opens the shrimp sell prompt
 - if there is a snail in each of the four rooms, the discount shop graphic `14` is drawn at `(33,11)`
 - pressing `up` on the discount shop opens the discount menu
-- if there is an adult shrimp with `purity >= 2.0`, the culling shop graphic `15` is drawn at `(30,10)`
-- pressing `up` on the culling shop opens the cull menu
+- if there is a shrimp with `purity >= 5.0`, the fine shop graphic `15` is drawn at `(30,10)`
+- pressing `up` on the fine shop opens the fine menu
 - on day `19+`, the genetics shop graphic `31` is drawn at `(53,4)`
 - pressing `up` on the genetics shop opens the genetics menu
+- if there are `20+` shrimp or the tank is on day `35+`, the glass shop graphic `63` is drawn at `(1,14)`
+- pressing `up` on the glass shop opens the glass menu
 - purchases only work if `money>=cost`
 - creature purchases use slot `(2,2)`
   - `snail` cost `16`, icon `48`
   - `fancy` cost `30`, icon `52`, stock `3`
-  - `bacter ae` cost `24`, icon `16`
+  - `bacter ae` cost `24`, icon `16`, stock `4`
   - `moss ball` cost `12`, icon `20`, stock `10`
 - genetics shop upgrades are immediate and do not use inventory
   - `purity+` cost `20`, count shown in parentheses, adds `+0.2` baby purity
@@ -422,6 +430,11 @@ Created by `make_ent(k,x,y)`.
   - genetics purchases play `sfx(3)`
 - main-shop and discount-shop `fancy` shrimp each have separate stock of `3`
 - when a fancy stock reaches `0`, the row is shown in red and can no longer be bought
+- fine-shop `fancy` stock is `3`
+- plant-shop `bacter ae` stock is `4`
+- glass-shop `bacter ae` stock is `4`
+- glass-shop `bacter ae` costs `28`
+- when bacter ae reaches `0`, the row is shown in red and can no longer be bought
 - plant-shop and discount-shop `moss ball` each have separate stock of `10`
 - when a moss stock reaches `0`, the row is shown in red and can no longer be bought
 - item purchases use slot `(3,2)`
@@ -429,6 +442,7 @@ Created by `make_ent(k,x,y)`.
   - `ro water change` cost `6`, icon `32`
   - `mineral kh+` cost `10`, icon `50`
   - `mineral gh+` cost `6`, icon `51`
+  - `ph+` cost `20`, icon `192`
 - pressing `Z` in normal play uses inventory when not inspecting/holding a nearby creature
 - using a creature item spawns it next to the player and clears the slot
 - using `water change`:
@@ -455,6 +469,8 @@ Created by `make_ent(k,x,y)`.
   - `stab -= 20`
   - `gh += 4`
   - `tds += 25`
+- using `ph+`:
+  - `ph += 0.1`
 - buying `snail` stores random `np=0..1` and random `nb`
 - using `snail` spawns that stored snail next to the player
 - using `bacter ae` places a microorganism next to the player
@@ -463,10 +479,9 @@ Created by `make_ent(k,x,y)`.
   - `water change` cost `3`
   - `moss ball` cost `10`, stock `10`
   - `fancy` cost `20`
-- culling shop sells:
-  - free yes/no cull confirmation
-  - all shrimp with `purity < 0.5` are removed at once
-  - if no eligible shrimp exist, it shows `no naturals`
+- fine shop sells:
+  - `water` cost `1`
+  - `fancy` cost `40`, stock `3`
 - if no held shrimp is available, the shrimp shop shows `No shrimp to sell`
 - shrimp with `sp < 0.5` cannot be sold
 - shrimp sell value is `(flr(sp*5) + 2 if sr + 5 if sd) * 2`
