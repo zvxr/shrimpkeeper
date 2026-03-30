@@ -176,6 +176,7 @@ There are several shops in the tank.
 - unlocks permanently once there are `8` adult shrimp
 - sells plant-side support items
 - includes `RO Water Change`, `Bacter AE`, and moss ball
+- moss ball stock starts at `10`
 
 ### Shrimp Shop
 
@@ -197,6 +198,7 @@ There are several shops in the tank.
 - this is based on the current tank state, not a permanent unlock
 - sells discounted versions of a few existing items
 - includes water change, moss ball, and fancy shrimp
+- moss ball stock starts at `10` here too, tracked separately from the plant shop
 - fancy shrimp stock starts at `3` here too, tracked separately from the main shop
 
 ### Culling Shop

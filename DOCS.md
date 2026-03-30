@@ -252,6 +252,8 @@ Created by `make_ent(k,x,y)`.
 - `gd`: genetics-shop Devil mutation upgrade count
 - `f1`: main-shop fancy stock left
 - `f4`: discount-shop fancy stock left
+- `m2`: plant-shop moss stock left
+- `m4`: discount-shop moss stock left
 - one day is currently `1500` updates
 - the day clock now rolls every day instead of growing forever, to avoid PICO-8 number overflow
 - tank parameter drift is currently applied every `750` updates
@@ -265,6 +267,11 @@ Created by `make_ent(k,x,y)`.
   - dangerous: red
 - `ph`, `amm`, `kh`, and `gh` display with one decimal digit
 - HUD shows `Ct:` count above `day` in dark green
+- the `day` HUD text changes by in-day phase:
+  - `<375`: green
+  - `<750`: yellow
+  - `<1125`: orange
+  - final stretch: red
 - day messages last about `5` seconds and are chosen on new day with this priority:
   - `Algae bloom!` in dark green on bloom days
   - `Calico!` or `Jelly!` in green if a shrimp is born with `sp>=5`
@@ -407,7 +414,7 @@ Created by `make_ent(k,x,y)`.
   - `snail` cost `16`, icon `48`
   - `fancy` cost `30`, icon `52`, stock `3`
   - `bacter ae` cost `24`, icon `16`
-  - `moss ball` cost `12`, icon `20`
+  - `moss ball` cost `12`, icon `20`, stock `10`
 - genetics shop upgrades are immediate and do not use inventory
   - `purity+` cost `20`, count shown in parentheses, adds `+0.2` baby purity
   - `riley+` cost `6`, count shown in parentheses, adds `+1/20` Riley mutation chance
@@ -415,6 +422,8 @@ Created by `make_ent(k,x,y)`.
   - genetics purchases play `sfx(3)`
 - main-shop and discount-shop `fancy` shrimp each have separate stock of `3`
 - when a fancy stock reaches `0`, the row is shown in red and can no longer be bought
+- plant-shop and discount-shop `moss ball` each have separate stock of `10`
+- when a moss stock reaches `0`, the row is shown in red and can no longer be bought
 - item purchases use slot `(3,2)`
   - `water change` cost `5`, icon `49`
   - `ro water change` cost `6`, icon `32`
@@ -452,7 +461,7 @@ Created by `make_ent(k,x,y)`.
 - using `moss ball` places a moss ball next to the player
 - discount shop sells:
   - `water change` cost `3`
-  - `moss ball` cost `10`
+  - `moss ball` cost `10`, stock `10`
   - `fancy` cost `20`
 - culling shop sells:
   - free yes/no cull confirmation

@@ -67,9 +67,11 @@ function buy_shop()
 			if tank.i2>0 then return end
 			tank.i2=49
 		else
+			if tank.ss==2 and tank.m4<1 then return end
 			if tank.ss==3 and tank.f4<1 then return end
 			if tank.i1>0 then return end
 			tank.i1=tank.ss==2 and 4 or 2
+			if tank.ss==2 then tank.m4-=1 end
 			if tank.ss==3 then tank.f4-=1 end
 		end
 	elseif tank.sm==2 then
@@ -77,8 +79,10 @@ function buy_shop()
 			if tank.i2>0 then return end
 			tank.i2=32
 		else
+			if tank.ss==3 and tank.m2<1 then return end
 			if tank.i1>0 then return end
 			tank.i1=tank.ss+1
+			if tank.ss==3 then tank.m2-=1 end
 		end
 	elseif tank.ss<4 then
 		if tank.i2>0 then return end
@@ -167,7 +171,7 @@ function draw_shop()
 	elseif tank.sm==4 then
 		print("discount",40,28,7)
 		draw_shop_row(1,38,"water",3)
-		draw_shop_row(2,48,"moss ball",10)
+		draw_shop_row(2,48,"moss ("..tank.m4..")",10,tank.m4<1)
 		draw_shop_row(3,58,"fancy ("..tank.f4..")",20,tank.f4<1)
 	elseif tank.sm==6 then
 		print("genetic",44,28,7)
@@ -178,7 +182,7 @@ function draw_shop()
 		print("plant",52,28,7)
 		draw_shop_row(1,38,"ro water",6)
 		draw_shop_row(2,48,"bacter ae",24)
-		draw_shop_row(3,58,"moss ball",12)
+		draw_shop_row(3,58,"moss ("..tank.m2..")",12,tank.m2<1)
 	else
 		print("shop",56,28,7)
 		draw_shop_row(1,38,"water",5)

@@ -26,7 +26,9 @@ function init_tank()
 		gr=0,
 		gd=0,
 		f1=3,
-		f4=3
+		f4=3,
+		m2=10,
+		m4=10
 	}
 end
 
@@ -347,7 +349,8 @@ function draw_tank_hud()
 	print("amm:"..fmt1(tank.amm),36,3,st_col(st_amm(tank.amm)))
 	print("$"..tank.money,80,15,10)
 	print("Ct:"..adult_n(),104,3,3)
-	print("day:"..tank.day,100,15,11)
+	local c=tank.t<375 and 11 or tank.t<750 and 10 or tank.t<1125 and 9 or 8
+	print("day:"..tank.day,100,15,c)
 	print("kh:"..fmt1(tank.kh),8,9,st_col(st_kh(tank.kh)))
 	print("gh:"..fmt1(tank.gh),36,9,st_col(st_gh(tank.gh)))
 	if tank.mt>0 then print(tank.msg,36,15,tank.msgc) end
