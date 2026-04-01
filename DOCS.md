@@ -254,6 +254,7 @@ Created by `make_ent(k,x,y)`.
 - `gp`: genetics-shop purity upgrade count
 - `gr`: genetics-shop Riley mutation upgrade count
 - `gd`: genetics-shop Devil mutation upgrade count
+- `pp`: number of `ph+` items bought so far
 - `f4`: thrift-shop fancy stock left
 - `b2`: plant-shop bacter ae stock left
 - `b7`: glass-shop bacter ae stock left
@@ -283,6 +284,7 @@ Created by `make_ent(k,x,y)`.
   - `Calico!` or `Jelly!` in green if a shrimp is born with `sp>=5`
   - `BloodyMary!` or `GreenJade!` in green if a shrimp is born with `sp>=2`
   - `Mutation!` in green if a breeding mutation happened
+  - `Last day` in red on day `41`
   - `Shop opened!` in pink on day `12` and day `19`
   - `Old tank` in dark grey on day `18+`
   - `New day` in dark grey otherwise
@@ -343,20 +345,30 @@ Created by `make_ent(k,x,y)`.
 
 - if any parameter is red on a new day, `rx += 1`
 - if a full day passes with no red parameters, `rx -= 1` until it reaches `0`
-- `rx` is shown as red `x` marks above `day`
+- when `rx` increases, `sfx(5)` plays
+- `rx` now changes the HUD/task-bar palette instead of drawing red `x` marks:
+  - `1`: orange remaps to red
+  - `2+`: orange and yellow both remap to red
+- on day `41`, the HUD/task bar instead remaps orange to green for the last-day warning
 - game over happens if:
+  - `day >= 42`
   - `rx >= 3`
   - `stab <= 0`
   - `amm >= 3.0`
   - there are no shrimp or fry left in the tank
 - game over screen also shows `score`, which is:
-  - `adult shrimp * 10`
-  - `max purity * 200`
-  - `average adult purity * 100`
-  - `snails * 20`
-  - `moss balls * 10`
-  - `days * 40`
-  - `algae * -2`
+  - `days * 100`, plus `800` if the player reaches day `42`, capped at `5000`
+  - `adult shrimp * 100`
+  - `max purity * 100`
+- game over rows are color-banded by result:
+  - days: `40 / 32 / 16`
+  - ct: `28 / 20 / 14`
+  - max pur: `12 / 8 / 4`
+- final score titles:
+  - `8000`: `Prawn`
+  - `6000`: `Jumbo`
+  - `3000`: `Shrimp`
+  - below that: `Fry`
 
 ## Coins
 
@@ -392,7 +404,7 @@ Created by `make_ent(k,x,y)`.
 
 - only one creature can be held at a time
 - held shrimp draw with sprite `52`
-- held shrimp show `*` under `gH` when they are sellable
+- held shrimp show `*` under `gH` when they are adults and sellable
 - held snails draw with sprite `48` one HUD row higher than the other held icons
 - held moss balls draw with sprite `20`
 - held icon is drawn at tile `(1,2)` on the current screen
@@ -444,7 +456,7 @@ Created by `make_ent(k,x,y)`.
   - `ro water change` cost `6`, icon `32`
   - `mineral kh+` cost `10`, icon `50`
   - `mineral gh+` cost `6`, icon `51`
-  - `ph+` cost `20`, icon `192`
+  - `ph+` starts at cost `15`, then increases by `5` per purchase, icon `192`
 - pressing `Z` in normal play uses inventory when not inspecting/holding a nearby creature
 - using a creature item spawns it next to the player and clears the slot
 - using `water change`:
@@ -476,7 +488,7 @@ Created by `make_ent(k,x,y)`.
 - using `ph+`:
   - `ph += 0.1`
 - buying `snail` stores random `np=0..1` and random `nb`
-- using `snail` spawns that stored snail next to the player
+- using `snail` spawns that stored snail next to the player, based on last left/right input
 - using `bacter ae` places a microorganism next to the player
 - using `moss ball` places a moss ball next to the player
 - thrift shop sells:
@@ -484,11 +496,12 @@ Created by `make_ent(k,x,y)`.
   - `moss ball` cost `10`, stock `10`
   - `fancy` cost `20`
 - grow shop:
-  - if a held shrimp is a fry, it offers `Grow Age?` for `10`
+  - if a held shrimp is a fry, it offers `Grow fry to {new age}?` for `5`
   - accepting increases the held fry age by `1`
+  - adult shrimp do not get the grow option
   - otherwise it shows `Bring fry to age`
 - if no held shrimp is available, the shrimp shop shows `No shrimp to sell`
-- shrimp with `sp < 0.5` cannot be sold
+- non-adult held shrimp show `Bring adult` and cannot be sold
 - shrimp sell value is `(flr(sp*5) + 2 if sr + 5 if sd) * 2`
 - in the shrimp shop:
   - `X`: accept sale

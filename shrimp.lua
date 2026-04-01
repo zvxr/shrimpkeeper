@@ -315,7 +315,7 @@ function draw_held_pet()
 		pal(7,shrimp_belly(ha,c))
 		pal(14,ha.sd and ha.sp>0.9 and sbc(ha,10,9) or 14)
 		spr(52,room_x*128+8,16)
-		if ha.sp>=0.5 then print("*",36,15,c) end
+		if ha.sa>=5 then print("*",36,15,c) end
 	else
 		if ha.np!=nil then
 			pal(5,snail_shell(ha))

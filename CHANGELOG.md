@@ -20,7 +20,15 @@
 - Algae no longer block other algae, reducing soft-locks from dense algae clumps.
 - Algae blooms no longer place algae in the top HUD rows.
 - Discount Shop is now the Thrift Shop and also appears when any shrimp has purity `<0.5`.
-- Fine Shop is now the Grow Shop and ages a held fry by `1` for `10`.
+- Fine Shop is now the Grow Shop and ages a held fry by `1`.
+- Purchased creatures now place left or right based on the player's last horizontal input.
+- Grow Shop age-up cost is now `5`.
+- Shrimp Shop now sells any held adult shrimp instead of using a purity gate.
+- `pH+` now starts at `15` and increases by `5` for each one already bought.
+- Day `41` now shows `Last day` in red, and day `42` ends the game automatically.
+- Game-over scoring and panel layout were reworked around days, adult count, max purity, and rank titles.
+- Grow Shop now shows the target fry age in the prompt and does not offer growth for adults.
+- Red warning days now play `sfx(5)` and tint the HUD/task bar instead of drawing `x` marks.
 - Starting `kH` is now `0` instead of `4.0`.
 - Fine Shop now appears when there is any adult shrimp.
 

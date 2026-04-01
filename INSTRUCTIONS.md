@@ -86,13 +86,14 @@ Every new day:
 
 - shrimp age by `1`
 - breeding can happen
-- red warning marks can go up or down
+- red warning state can go up or down
 - a short status message appears in the task bar
 
 Possible day messages:
 
 - `Algae bloom!`
 - `Mutation!`
+- `Last day`
 - `Shop opened!`
 - `Old Tank Syn`
 - `New day`
@@ -183,6 +184,7 @@ There are several shops in the tank.
 
 - appears on day `12+`
 - used to sell held shrimp
+- sells any held adult shrimp
 - turns a held shrimp into money based on purity and traits
 
 ### Genetics Shop
@@ -198,6 +200,7 @@ There are several shops in the tank.
 - appears at `20+` shrimp or on day `35+`
 - sells `pH+` and `Bacter AE`
 - `pH+` is a holdable item that raises pH by `0.1`
+- `pH+` starts at `15` and increases by `5` each time you buy one
 - bacter ae stock starts at `4`
 - glass-shop `Bacter AE` costs `28`
 
@@ -215,8 +218,9 @@ There are several shops in the tank.
 - appears when there is at least `1` adult shrimp
 - this is based on the current tank state, not a permanent unlock
 - expects you to be holding a fry
-- if you bring a held fry, it offers `Grow Age?` for `10`
+- if you bring a held fry, it offers `Grow fry to {new age}?` for `5`
 - buying it increases that held fry's age by `1`
+- adult shrimp are not eligible
 - if you are not holding a fry, it shows `Bring fry to age`
 
 ## Shrimp
@@ -255,6 +259,7 @@ There are several shops in the tank.
 
 The game ends if any of these happen:
 
+- day reaches `42`
 - ammonia reaches `3.0`
 - stability reaches `0`
 - bad water remains red long enough to build `3` red `x` marks

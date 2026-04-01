@@ -1,6 +1,6 @@
 function shop_cost()
 	if tank.sm==5 then
-		return 10
+		return 5
 	end
 	if tank.sm==4 then
 		return tank.ss==1 and 3 or tank.ss==2 and 10 or 20
@@ -9,7 +9,7 @@ function shop_cost()
 		return tank.ss==1 and 20 or tank.ss==2 and 6 or 10
 	end
 	if tank.sm==7 then
-		return tank.ss==1 and 20 or 28
+		return tank.ss==1 and 15+tank.pp*5 or 28
 	end
 	if tank.sm==2 then
 		return tank.ss==1 and 6 or tank.ss==2 and 24 or 12
@@ -68,6 +68,7 @@ function buy_shop()
 		if tank.ss==1 then
 			if tank.i2>0 then return end
 			tank.i2=192
+			tank.pp+=1
 		else
 			if tank.b7<1 then return end
 			if tank.i1>0 then return end
@@ -117,7 +118,7 @@ end
 
 function upd_shop()
 	if tank.sm==3 then
-		if btnp(5) and ha and ha.sa!=nil and ha.sp>=0.5 then
+		if btnp(5) and ha and ha.sa!=nil and ha.sa>=5 then
 			tank.money+=shrimp_price()
 			ha=nil
 			tank.sm=0
@@ -126,7 +127,7 @@ function upd_shop()
 		end
 		return
 	elseif tank.sm==5 then
-		if btnp(5) and ha and ha.sa!=nil and ha.sa<5 and tank.money>=10 then
+		if btnp(5) and ha and ha.sa!=nil and ha.sa<5 and tank.money>=5 then
 			buy_shop()
 		elseif btnp(4) then
 			tank.sm=0
@@ -155,13 +156,13 @@ function draw_shop()
 	rect(12,24,116,88,7)
 	if tank.sm==3 then
 		if ha and ha.sa!=nil then
-			if ha.sp>=0.5 then
+			if ha.sa>=5 then
 				print("sell shrimp",36,40,7)
 				print("for $"..shrimp_price().."?",42,56,7)
 				print("x yes  z no",34,72,7)
 			else
 				print("cannot sell",34,48,7)
-				print("purity < .5",32,58,7)
+				print("bring adult",32,58,7)
 				print("z exit",46,72,7)
 			end
 		else
@@ -171,8 +172,9 @@ function draw_shop()
 	elseif tank.sm==5 then
 		if ha and ha.sa!=nil and ha.sa<5 then
 			print("grow shop",36,40,7)
-			print("grow age?",38,56,7)
-			print("x $10  z no",38,72,7)
+			print("grow fry to "..(ha.sa+1).."?",22,56,7)
+			print("z no",34,72,7)
+			print("x yes",74,72,tank.money<5 and 8 or 7)
 		else
 			print("grow shop",36,40,7)
 			print("bring fry",38,56,7)
@@ -191,7 +193,7 @@ function draw_shop()
 		draw_shop_row(3,58,"devil+ ("..tank.gd..")",10)
 	elseif tank.sm==7 then
 		print("glass",44,28,7)
-		draw_shop_row(1,38,"ph+",20)
+		draw_shop_row(1,38,"ph+",15+tank.pp*5)
 		draw_shop_row(2,48,"bacter ("..tank.b7..")",28,tank.b7<1)
 	elseif tank.sm==2 then
 		print("plant",52,28,7)

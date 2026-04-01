@@ -21,55 +21,55 @@ function touch_tile(a,x,y)
 		abs(a.y-(y+.5)) < a.h+.5
 end
 
-function on_door(a)
+function on_s1(a)
 	return touch_tile(a,60,5) or
 		touch_tile(a,5,4)
 end
 
-function on_plant(a)
-	return plant_ok() and touch_tile(a,25,4)
+function on_s2(a)
+	return s2_ok() and touch_tile(a,25,4)
 end
 
-function on_shrimp_shop(a)
+function on_s3(a)
 	return tank.day>=12 and touch_tile(a,45,5)
 end
 
-function on_disc(a)
-	return thr_ok() and touch_tile(a,33,11)
+function on_s4(a)
+	return s4_ok() and touch_tile(a,33,11)
 end
 
-function on_cull(a)
-	return cull_ok() and touch_tile(a,30,10)
+function on_s5(a)
+	return s5_ok() and touch_tile(a,30,10)
 end
 
-function on_gen(a)
+function on_s6(a)
 	return tank.day>=19 and touch_tile(a,53,4)
 end
 
-function on_ph(a)
-	return ph_ok() and touch_tile(a,1,14)
+function on_s7(a)
+	return s7_ok() and touch_tile(a,1,14)
 end
 
 function try_door(a)
-	if on_door(a) and btnp(2) then
+	if on_s1(a) and btnp(2) then
 		tank.sm=1
 		tank.ss=1
-	elseif on_plant(a) and btnp(2) then
+	elseif on_s2(a) and btnp(2) then
 		tank.sm=2
 		tank.ss=1
-	elseif on_shrimp_shop(a) and btnp(2) then
+	elseif on_s3(a) and btnp(2) then
 		tank.sm=3
 		tank.ss=1
-	elseif on_disc(a) and btnp(2) then
+	elseif on_s4(a) and btnp(2) then
 		tank.sm=4
 		tank.ss=1
-	elseif on_cull(a) and btnp(2) then
+	elseif on_s5(a) and btnp(2) then
 		tank.sm=5
 		tank.ss=1
-	elseif on_gen(a) and btnp(2) then
+	elseif on_s6(a) and btnp(2) then
 		tank.sm=6
 		tank.ss=1
-	elseif on_ph(a) and btnp(2) then
+	elseif on_s7(a) and btnp(2) then
 		tank.sm=7
 		tank.ss=1
 	end
